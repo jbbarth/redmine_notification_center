@@ -1,3 +1,237 @@
 <%= content_tag :div, :class => "tab-content", :id => "tab-content-notifications", :style => (params[:tab] != "notifications" ? "display:none" : "") do %>
-  Notification tab
+
+<form accept-charset="UTF-8" action="#" class="edit_user" id="my_account_form" method="get">
+
+<fieldset class="box container">
+  <p><label>
+    <input id=no_notification_at_all type=checkbox />
+    Je ne souhaite recevoir AUCUNE notification par mail <em class=info style="display:inline">(déconseillé)</em>
+  </label></p>
+
+  <div id=notifications-want class=section>
+    <fieldset class="box" style="border-color:#47D">
+      <legend style="color:#36C">Je souhaite être notifié par mail ...</legend>
+      <p><label><input type=checkbox checked=checked id=notifications_for_all_events />pour tous les évènements de tous mes projets</label></p>
+
+      <dl class=depends-container>
+        <dt>Selon mon rôle sur le projet</dt>
+        <dd>
+          <select id="notification_by_role" class="has-depends">
+            <option value="always">Quel que soit mon rôle</option>
+            <option value="depends">Seulement pour les rôles suivants ...</option>
+          </select>
+        </dd>
+        <dd class=depends>
+          <label><input type=checkbox /> Maître d'Ouvrage </label><br>
+          <label><input type=checkbox /> AMOA </label><br>
+          <label><input type=checkbox /> Maître d'Oeuvre </label><br>
+          <label><input type=checkbox /> PND-PNE </label><br>
+          <label><input type=checkbox /> Astreinte CS </label><br>
+          <label><input type=checkbox /> Administrateur System </label><br>
+          <label><input type=checkbox /> Observateur </label><br>
+          <label><input type=checkbox /> Observateur annonces </label><br>
+          <label><input type=checkbox /> Administrateur annonces </label><br>
+          <label><input type=checkbox /> Gestionnaire de projets </label><br>
+          <label><input type=checkbox /> Support-Phase-Pilote </label>
+        </dd>
+      </dl>
+
+      <hr>
+
+      <dl class=depends-container>
+        <dt>Demandes</dt>
+        <dd>
+          <select id="notification_for_issues" class="has-depends">
+            <option value="always">Toutes les demandes et mises à jour</option>
+            <option value="depends">Seulement dans certains cas ...</option>
+            <option value="never">Jamais</option>
+          </select>
+        </dt>
+        <dd class="depends"><label>
+          <input type=checkbox /> si je suis auteur de la demande
+        </label></dd>
+        <dd class="depends"><label>
+          <input type=checkbox /> si je suis assigné sur la demande
+        </label></dd>
+        <dd class="depends"><label>
+          <input type=checkbox /> éviter les notifications pour les à jour
+        </label></dd>
+        <dd class="depends"><em class="info">
+          Dans tous les cas vous recevrez les notifications pour les demandes
+          où vous êtes marqué comme "Observateur", marquées par une étoile
+          (<img src="https://portail.centre-serveur.developpement-durable.gouv.fr/plugin_assets/redmine_scn/images/star.png" />).
+        </em></dd>
+      </dl>
+
+      <hr>
+
+      <dl class=depends-container>
+        <dt>Annonces</dt>
+        <dd>
+          <select id="notification_for_news">
+            <option value="always">Toutes les annonces et commentaires</option>
+            <option value="depends">Seulement les annonces, pas les commentaires</option>
+            <option value="never">Jamais</option>
+          </select>
+        </dd>
+      </dl>
+
+      <hr>
+
+      <dl class=depends-container>
+        <dt>Documents</dt>
+        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+        <dd style="display:none">
+          <select id="notification_for_documents">
+            <option value="always">Lorsqu'un document est ajouté</option>
+            <option value="never">Jamais</option>
+          </select>
+        </dd>
+      </dl>
+
+      <hr>
+
+      <dl class=depends-container>
+        <dt>Fichiers</dt>
+        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+        <dd style="display:none">
+          <select id="notification_for_files">
+            <option value="always">Lorsqu'un fichier est ajouté</option>
+            <option value="never">Jamais</option>
+          </select>
+        </dd>
+      </dl>
+
+      <hr>
+
+      <dl class=depends-container>
+        <dt>Annonces</dt>
+        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+        <dd style="display:none">
+          <select id="notification_for_forums">
+            <option value="always">Lors d'un nouveau message sur le forum</option>
+            <option value="never">Jamais</option>
+          </select>
+        </dd>
+      </dl>
+
+      <hr>
+
+      <dl class=depends-container>
+        <dt>Wiki</dt>
+        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+        <dd style="display:none">
+          <select id="notification_for_wikis">
+            <option value="always">Lors des ajouts ou mises à jour de pages wiki</option>
+            <option value="depends">Seulement lors des ajouts de pages wiki</option>
+            <option value="never">Jamais</option>
+          </select>
+        </dd>
+      </dl>
+
+    </fieldset>
+  </div>
+
+  <div id=notifications-nowant class=section>
+    <fieldset class="box" style="border-color:#C32">
+      <legend style="color:#A22">Exceptions: je ne souhaite pas être notifié par mail ...</legend>
+      <p><label>
+        <input type=checkbox /> pour les changements que j'effectue
+      </label></p>
+      <hr>
+      <p><label>
+        <input type=checkbox /> pour les projets suivants : <a href="#" onclick="alert('Fenêtre modale pour le choix des projets'); return false">Choisir</a>
+      </label></p>
+      <p><label>
+        <input type=checkbox /> pour les trackers suivants : <a href="#" onclick="alert('Fenêtre modale pour le choix des trackers'); return false">Choisir</a>
+      </label></p>
+      <p><label>
+        <input type=checkbox /> lorsque j'ai le rôle suivant : <a href="#" onclick="alert('Fenêtre modale pour le choix des rôles'); return false">Choisir</a>
+      </label></p>
+      <p><em class="info">
+        Ces exceptions ne s'appliqueront pas si vous êtes demandeur, assigné, ou
+        observateur d'une demande. Dans ce cas, les règles définies dans le cadre
+        bleu de droite s'appliqueront.
+      </em></p>
+    </fieldset>
+  </div>
+</fieldset>
+
+<fieldset class="box container" id=other-mail-address>
+  <p>
+    <label>
+      <input id=notification_to_other_address type=checkbox />
+      Je souhaite être notifié sur une adresse différente de mon adresse mail principale <em class=info style="display:inline">(exemple: boîte mail partagée)</em>
+    </label>
+    <input type=text id=other_address style="display:block;margin:8px 15px 0 22px; width:300px" placeholder="mail@example.com" />
+  </p>
+</fieldset>
+
+<div id="alert-no-notification" style="color:red;border:1px solid red; background-color:#fdd; padding:10px; margin:10px 0; text-align:center;">
+  Vous prenez le risque de rater des informations importantes vous concernant. L'option "Aucune notification" est destinée à des utilisateurs expérimentés.
+</div>
+
+<div class="clear"></div>
+<div>
+  <input type="submit" value="Enregistrer mes préférences" />
+</div>
+
+</form>
+
 <% end %>
+
+<script>
+  displayNotificationDependsOptions = function(id) {
+    var $select = $("#"+id)
+    var showOrHide = ($select.find("option:selected").val() == "depends")
+    $select.closest(".depends-container").find(".depends").toggle(showOrHide)
+  }
+  handleNoNotificationOption = function() {
+    $nonotif = $("#no_notification_at_all")
+    $("#tab-content-notifications .section").toggle(!$nonotif.is(":checked"))
+    $("#other-mail-address").toggle(!$nonotif.is(":checked"))
+    $("#alert-no-notification").toggle($nonotif.is(":checked"))
+  }
+  handleOtherAddressOption = function() {
+    $otheraddress = $("#notification_to_other_address")
+    $("#other_address").toggle($otheraddress.is(":checked"))
+  }
+  handleSelectsDependingOnAllNotificationsOption = function() {
+    var $selects = $("#notifications_for_all_events").closest('fieldset.box').find('select')
+    if ($("#notifications_for_all_events").is(":checked")) {
+      $selects.val("always").change()
+      $selects.attr('disabled', 'disabled')
+    } else {
+      $selects.attr('disabled', false)
+    }
+  }
+  $(function() {
+    //display fine grained options
+    $(".has-depends").each(function() { displayNotificationDependsOptions($(this).attr('id')) })
+    $(".has-depends").on("change", function() { displayNotificationDependsOptions($(this).attr('id')) })
+    //handle the case when a user wants no notification at all
+    handleNoNotificationOption()
+    $("#no_notification_at_all").on("change", function() { handleNoNotificationOption() })
+    //handle other address option
+    handleOtherAddressOption()
+    $("#notification_to_other_address").on("change", function() { handleOtherAddressOption() })
+    //handle 'notifications for all events' checkbox
+    handleSelectsDependingOnAllNotificationsOption()
+    $("#notifications_for_all_events").on("change", function() { handleSelectsDependingOnAllNotificationsOption() })
+  })
+</script>
+
+<style>
+  #tab-content-notifications fieldset { margin:10px 0 0 0; padding:10px; box-sizing:border-box; background-color:#fcfcfc; }
+  #tab-content-notifications fieldset:first-child { margin-right:10px; }
+  #tab-content-notifications fieldset.box > legend { font-size:130%; }
+  #tab-content-notifications fieldset.container { background-color:#f5f5f5; margin:0 0 10px 0; }
+  #tab-content-notifications p { margin:0; padding:5px; }
+  #tab-content-notifications select { margin:0 4px 4px 0; width:auto; }
+  #tab-content-notifications em.info { padding:0 5px; }
+  #tab-content-notifications dl { margin:10px 5px; }
+  #tab-content-notifications dl dt { float:left; font-weight:bold; padding:5px; width:180px; text-align:right; }
+  #tab-content-notifications dl dd { margin-left:200px; padding:5px 0; }
+  #tab-content-notifications hr { background-color:#eee; }
+  #tab-content-notifications .section { float:left; box-sizing:border-box; padding:0; margin:0; width:50%; min-width:570px; }
+</style>
