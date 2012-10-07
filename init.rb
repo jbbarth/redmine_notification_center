@@ -14,3 +14,12 @@ Redmine::Plugin.register :redmine_notification_center do
   url 'https://github.com/jbbarth/redmine_notification_center'
   requires_redmine :version => %w(2.1.0)
 end
+
+# Patches to existing classes/modules
+ActionDispatch::Callbacks.to_prepare do
+  # we don't want to break core's tests
+  # we'll require it manually in our own tests
+  unless Rails.env.test?
+    require_dependency 'redmine_notification_center/mailer_patch'
+  end
+end
