@@ -20,5 +20,5 @@ en:
   text_user_mail_issues_info_watchers: "In any case you'll receive notifications for issues on which you're a \"Watcher\"."
   text_user_mail_exceptions_info: "These exceptions won't be applied if you are the author, assignee, or watcher on an issue. In this case, rules defined in the first frame will apply."
   text_i_want_to_be_notified_to_an_other_address: "I want to be notified on an other mail address"
-  text_other_address_example: "example: team email address"
+  text_other_address_example: "example: shared mail box"
   text_notification_warning_if_none: "You take the risk of missing some important informations about your projects. The \"No notification\" option should only be used by advanced users."
