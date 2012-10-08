@@ -22,17 +22,9 @@
           </select>
         </dd>
         <dd class=depends>
-          <label><input type=checkbox /> Maître d'Ouvrage </label><br>
-          <label><input type=checkbox /> AMOA </label><br>
-          <label><input type=checkbox /> Maître d'Oeuvre </label><br>
-          <label><input type=checkbox /> PND-PNE </label><br>
-          <label><input type=checkbox /> Astreinte CS </label><br>
-          <label><input type=checkbox /> Administrateur System </label><br>
-          <label><input type=checkbox /> Observateur </label><br>
-          <label><input type=checkbox /> Observateur annonces </label><br>
-          <label><input type=checkbox /> Administrateur annonces </label><br>
-          <label><input type=checkbox /> Gestionnaire de projets </label><br>
-          <label><input type=checkbox /> Support-Phase-Pilote </label>
+        <% Role.all.each do |role| %>
+          <label><input type=checkbox /> <%= role.name %></label><br>
+        <% end %>
         </dd>
       </dl>
 
