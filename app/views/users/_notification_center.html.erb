@@ -5,118 +5,102 @@
 <fieldset class="box container">
   <p><label>
     <input id=no_notification_at_all type=checkbox />
-    Je ne souhaite recevoir AUCUNE notification par mail <em class=info style="display:inline">(déconseillé)</em>
+    <%= l(:label_user_mail_no_mail_at_all) %> <em class=info style="display:inline">(<%= l(:label_not_recommended) %>)</em>
   </label></p>
 
   <div id=notifications-want class=section>
     <fieldset class="box" style="border-color:#47D">
-      <legend style="color:#36C">Je souhaite être notifié par mail ...</legend>
-      <p><label><input type=checkbox checked=checked id=notifications_for_all_events />pour tous les évènements de tous mes projets</label></p>
+      <legend style="color:#36C"><%= l(:text_user_mail_want_to_be_notified) %></legend>
+      <p>
+        <label>
+          <input type=checkbox checked=checked id=notifications_for_all_events />
+          <%= l(:label_user_mail_option_all) %>
+        </label>
+      </p>
 
       <dl class=depends-container>
-        <dt>Selon mon rôle sur le projet</dt>
-        <dd>
-          <select id="notification_by_role" class="has-depends">
-            <option value="always">Quel que soit mon rôle</option>
-            <option value="depends">Seulement pour les rôles suivants ...</option>
-          </select>
-        </dd>
-        <dd class=depends>
-        <% Role.all.each do |role| %>
-          <label><input type=checkbox /> <%= role.name %></label><br>
-        <% end %>
-        </dd>
-      </dl>
-
-      <hr>
-
-      <dl class=depends-container>
-        <dt>Demandes</dt>
+        <dt><%= l(:label_issue_plural) %></dt>
         <dd>
           <select id="notification_for_issues" class="has-depends">
-            <option value="always">Toutes les demandes et mises à jour</option>
-            <option value="depends">Seulement dans certains cas ...</option>
-            <option value="never">Jamais</option>
+            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
+            <option value="custom"><%= l(:label_user_mail_custom_notifications) %></option>
+            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
           </select>
-        </dt>
+        </dd>
         <dd class="depends"><label>
-          <input type=checkbox /> si je suis auteur de la demande
+          <input type=checkbox /> <%= l(:label_user_mail_issues_if_author) %>
         </label></dd>
         <dd class="depends"><label>
-          <input type=checkbox /> si je suis assigné sur la demande
+          <input type=checkbox /> <%= l(:label_user_mail_issues_if_assignee %>
         </label></dd>
         <dd class="depends"><label>
-          <input type=checkbox /> éviter les notifications pour les à jour
+          <input type=checkbox /> <%= l(:label_user_mail_issues_if_other) %>
         </label></dd>
         <dd class="depends"><em class="info">
-          Dans tous les cas vous recevrez les notifications pour les demandes
-          où vous êtes marqué comme "Observateur", marquées par une étoile
-          (<img src="https://portail.centre-serveur.developpement-durable.gouv.fr/plugin_assets/redmine_scn/images/star.png" />).
+          <%= l(:text_user_mail_issues_info_watchers) %>
         </em></dd>
       </dl>
 
       <hr>
 
-      <dl class=depends-container>
-        <dt>Annonces</dt>
+      <dl>
+        <dt><%= l(:label_news_plural) %></dt>
         <dd>
           <select id="notification_for_news">
-            <option value="always">Toutes les annonces et commentaires</option>
-            <option value="depends">Seulement les annonces, pas les commentaires</option>
-            <option value="never">Jamais</option>
+            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
+            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
           </select>
         </dd>
       </dl>
 
       <hr>
 
-      <dl class=depends-container>
-        <dt>Documents</dt>
-        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+      <dl>
+        <dt><%= l(:label_document_plural) %></dt>
+        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
         <dd style="display:none">
           <select id="notification_for_documents">
-            <option value="always">Lorsqu'un document est ajouté</option>
-            <option value="never">Jamais</option>
+            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
+            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
           </select>
         </dd>
       </dl>
 
       <hr>
 
-      <dl class=depends-container>
-        <dt>Fichiers</dt>
-        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+      <dl>
+        <dt><%= l(:label_file_plural) %></dt>
+        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
         <dd style="display:none">
           <select id="notification_for_files">
-            <option value="always">Lorsqu'un fichier est ajouté</option>
-            <option value="never">Jamais</option>
+            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
+            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
           </select>
         </dd>
       </dl>
 
       <hr>
 
-      <dl class=depends-container>
-        <dt>Annonces</dt>
-        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+      <dl>
+        <dt><%= l(:label_board_plural) %></dt>
+        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
         <dd style="display:none">
           <select id="notification_for_forums">
-            <option value="always">Lors d'un nouveau message sur le forum</option>
-            <option value="never">Jamais</option>
+            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
+            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
           </select>
         </dd>
       </dl>
 
       <hr>
 
-      <dl class=depends-container>
-        <dt>Wiki</dt>
-        <dd><em class=info>Les notifications pour ce module ont été désactivées par l'administrateur.</em></dd>
+      <dl>
+        <dt><%= l(:label_wiki) %></dt>
+        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
         <dd style="display:none">
           <select id="notification_for_wikis">
-            <option value="always">Lors des ajouts ou mises à jour de pages wiki</option>
-            <option value="depends">Seulement lors des ajouts de pages wiki</option>
-            <option value="never">Jamais</option>
+            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
+            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
           </select>
         </dd>
       </dl>
@@ -126,24 +110,42 @@
 
   <div id=notifications-nowant class=section>
     <fieldset class="box" style="border-color:#C32">
-      <legend style="color:#A22">Exceptions: je ne souhaite pas être notifié par mail ...</legend>
-      <p><label>
-        <input type=checkbox /> pour les changements que j'effectue
-      </label></p>
+      <legend style="color:#A22"><%= l(:text_user_mail_dont_want_to_be_notified) %></legend>
+      <dl>
+        <dt><%= l(:label_general) %></dt>
+        <dd>
+          <%= l(:label_user_mail_no_self_notified) %>
+          <%= check_box_tag 'no_self_notified', 1, @user.pref[:no_self_notified] %>
+        </dd>
+        <dd>
+          <%= l(:label_user_mail_exception_for_some_projects) %>
+          <a href="#" onclick="alert('blah'); return false"><%= l(:button_change).downcase %></a>
+        </dd>
+        <dd>
+            <%= l(:label_user_mail_exception_for_some_roles) %>
+            <a href="#" onclick="alert('blah'); return false"><%= l(:button_change).downcase %></a>
+            <p style="display:none">
+            <% Role.all.each do |role| %>
+              <label><input type=checkbox /> <%= role.name %></label><br>
+            <% end %>
+            </p>
+        </dd>
+      </dl>
       <hr>
-      <p><label>
-        <input type=checkbox /> pour les projets suivants : <a href="#" onclick="alert('Fenêtre modale pour le choix des projets'); return false">Choisir</a>
-      </label></p>
-      <p><label>
-        <input type=checkbox /> pour les trackers suivants : <a href="#" onclick="alert('Fenêtre modale pour le choix des trackers'); return false">Choisir</a>
-      </label></p>
-      <p><label>
-        <input type=checkbox /> lorsque j'ai le rôle suivant : <a href="#" onclick="alert('Fenêtre modale pour le choix des rôles'); return false">Choisir</a>
-      </label></p>
+      <dl>
+        <dt><%= l(:label_issue_plural) %></dt>
+        <dd>
+          <%= l(:label_user_mail_exception_for_issue_updates) %>
+          Je ne veux pas être notifié pour les mises à jour
+          <input type=checkbox />
+        </dd>
+        <dd>
+          <%= l(:label_user_mail_exception_for_some_trackers) %>
+          <a href="#" onclick="alert('blah'); return false"><%= l(:button_change).downcase %></a>
+        </dd>
+      </dl>
       <p><em class="info">
-        Ces exceptions ne s'appliqueront pas si vous êtes demandeur, assigné, ou
-        observateur d'une demande. Dans ce cas, les règles définies dans le cadre
-        bleu de droite s'appliqueront.
+        <%= l(:text_user_mail_exceptions_info) %>
       </em></p>
     </fieldset>
   </div>
@@ -153,19 +155,20 @@
   <p>
     <label>
       <input id=notification_to_other_address type=checkbox />
-      Je souhaite être notifié sur une adresse différente de mon adresse mail principale <em class=info style="display:inline">(exemple: boîte mail partagée)</em>
+      <%= l(:text_i_want_to_be_notified_to_an_other_address) %>
+      <em class=info style="display:inline">(<%= l(:text_other_address_example) %>)</em>
     </label>
     <input type=text id=other_address style="display:block;margin:8px 15px 0 22px; width:300px" placeholder="mail@example.com" />
   </p>
 </fieldset>
 
 <div id="alert-no-notification" style="color:red;border:1px solid red; background-color:#fdd; padding:10px; margin:10px 0; text-align:center;">
-  Vous prenez le risque de rater des informations importantes vous concernant. L'option "Aucune notification" est destinée à des utilisateurs expérimentés.
+  <%= l(:text_notification_warning_if_none) %>
 </div>
 
 <div class="clear"></div>
 <div>
-  <input type="submit" value="Enregistrer mes préférences" />
+  <input type="submit" value="<%= l(:button_save) %>" />
 </div>
 
 </form>
@@ -175,7 +178,8 @@
 <script>
   displayNotificationDependsOptions = function(id) {
     var $select = $("#"+id)
-    var showOrHide = ($select.find("option:selected").val() == "depends")
+    var selected = $select.find("option:selected").val()
+    var showOrHide = (selected == "custom")
     $select.closest(".depends-container").find(".depends").toggle(showOrHide)
   }
   handleNoNotificationOption = function() {
@@ -219,11 +223,11 @@
   #tab-content-notifications fieldset.box > legend { font-size:130%; }
   #tab-content-notifications fieldset.container { background-color:#f5f5f5; margin:0 0 10px 0; }
   #tab-content-notifications p { margin:0; padding:5px; }
-  #tab-content-notifications select { margin:0 4px 4px 0; width:auto; }
+  #tab-content-notifications select { margin:0 4px 4px 0; min-width:220px; width:auto; }
   #tab-content-notifications em.info { padding:0 5px; }
   #tab-content-notifications dl { margin:10px 5px; }
-  #tab-content-notifications dl dt { float:left; font-weight:bold; padding:5px; width:180px; text-align:right; }
-  #tab-content-notifications dl dd { margin-left:200px; padding:5px 0; }
+  #tab-content-notifications dl dt { float:left; font-weight:bold; padding:5px 15px 5px 5px; width:100px; text-align:right; }
+  #tab-content-notifications dl dd { margin-left:125px; padding:5px 0; }
   #tab-content-notifications hr { background-color:#eee; }
   #tab-content-notifications .section { float:left; box-sizing:border-box; padding:0; margin:0; width:50%; min-width:570px; }
 </style>
