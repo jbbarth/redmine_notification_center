@@ -153,15 +153,15 @@
 <fieldset class="box container" id=other-mail-address>
   <p>
     <label>
-      <input id=notification_to_other_address type=checkbox />
+      <input id=notification-to-other-address type=checkbox />
       <%= l(:text_i_want_to_be_notified_to_an_other_address) %>
       <em class=info style="display:inline">(<%= l(:text_other_address_example) %>)</em>
     </label>
-    <input type=text id=other_address style="display:block;margin:8px 15px 0 22px; width:300px" placeholder="mail@example.com" />
+    <input type=text id=other-address class=other-address placeholder="mail@example.com" />
   </p>
 </fieldset>
 
-<div id="alert-no-notification" style="color:red;border:1px solid red; background-color:#fdd; padding:10px; margin:10px 0; text-align:center;">
+<div id=alert-no-notification class=alert-no-notification>
   <%= l(:text_notification_warning_if_none) %>
 </div>
 
@@ -174,59 +174,7 @@
 
 <% end %>
 
-<script>
-  displayNotificationDependsOptions = function(id) {
-    var $select = $("#"+id)
-    var selected = $select.find("option:selected").val()
-    var showOrHide = (selected == "custom")
-    $select.closest(".depends-container").find(".depends").toggle(showOrHide)
-  }
-  handleNoNotificationOption = function() {
-    $nonotif = $("#no_notification_at_all")
-    $("#tab-content-notifications .section").toggle(!$nonotif.is(":checked"))
-    $("#other-mail-address").toggle(!$nonotif.is(":checked"))
-    $("#alert-no-notification").toggle($nonotif.is(":checked"))
-  }
-  handleOtherAddressOption = function() {
-    $otheraddress = $("#notification_to_other_address")
-    $("#other_address").toggle($otheraddress.is(":checked"))
-  }
-  handleSelectsDependingOnAllNotificationsOption = function() {
-    var $selects = $("#notifications_for_all_events").closest('fieldset.box').find('select')
-    if ($("#notifications_for_all_events").is(":checked")) {
-      $selects.val("always").change()
-      $selects.attr('disabled', 'disabled')
-    } else {
-      $selects.attr('disabled', false)
-    }
-  }
-  $(function() {
-    //display fine grained options
-    $(".has-depends").each(function() { displayNotificationDependsOptions($(this).attr('id')) })
-    $(".has-depends").on("change", function() { displayNotificationDependsOptions($(this).attr('id')) })
-    //handle the case when a user wants no notification at all
-    handleNoNotificationOption()
-    $("#no_notification_at_all").on("change", function() { handleNoNotificationOption() })
-    //handle other address option
-    handleOtherAddressOption()
-    $("#notification_to_other_address").on("change", function() { handleOtherAddressOption() })
-    //handle 'notifications for all events' checkbox
-    handleSelectsDependingOnAllNotificationsOption()
-    $("#notifications_for_all_events").on("change", function() { handleSelectsDependingOnAllNotificationsOption() })
-  })
-</script>
-
-<style>
-  #tab-content-notifications fieldset { margin:10px 0 0 0; padding:10px; box-sizing:border-box; background-color:#fcfcfc; }
-  #tab-content-notifications fieldset:first-child { margin-right:10px; }
-  #tab-content-notifications fieldset.box > legend { font-size:130%; }
-  #tab-content-notifications fieldset.container { background-color:#f5f5f5; margin:0 0 10px 0; }
-  #tab-content-notifications p { margin:0; padding:5px; }
-  #tab-content-notifications select { margin:0 4px 4px 0; min-width:220px; width:auto; }
-  #tab-content-notifications em.info { padding:0 5px; }
-  #tab-content-notifications dl { margin:10px 5px; }
-  #tab-content-notifications dl dt { float:left; font-weight:bold; padding:5px 15px 5px 5px; width:100px; text-align:right; }
-  #tab-content-notifications dl dd { margin-left:125px; padding:5px 0; }
-  #tab-content-notifications hr { background-color:#eee; }
-  #tab-content-notifications .section { float:left; box-sizing:border-box; padding:0; margin:0; width:50%; min-width:570px; }
-</style>
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_notification_center', :plugin => :redmine_notification_center %>
+  <%= javascript_include_tag 'redmine_notification_center', :plugin => :redmine_notification_center %>
+<% end %>
