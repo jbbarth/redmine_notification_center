@@ -208,10 +208,10 @@
           <%= link_to l(:button_change).downcase, '#', :class => 'toggle_exception_details' %>
           <p class=exception_details_view></p>
           <p class=exception_details_form style="display:none">
-          <% IssueStatus.sorted.each do |status| %>
+          <% IssuePriority.all.each do |priority| %>
             <label>
-              <%= check_box_tag 'pref[exceptions][for_issue_priorities][]', status.id, opts[:exceptions][:for_issue_priorities].include?(status.id) %>
-              <span class=name><%= status.name %></span>
+              <%= check_box_tag 'pref[exceptions][for_issue_priorities][]', priority.id, opts[:exceptions][:for_issue_priorities].include?(priority.id) %>
+              <span class=name><%= priority.name %></span>
             </label><br>
           <% end %>
           </p>
