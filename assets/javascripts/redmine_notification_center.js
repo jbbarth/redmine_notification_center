@@ -49,7 +49,8 @@ $(function() {
   handleExceptionsDetails()
   $(".exception_details_form").each(function() { handleExceptionsDetails(this) })
   $(".exception_details_form").on("change", function() { handleExceptionsDetails(this) })
-  $(".toggle_exception_details").on("click", function() {
+  $(".toggle_exception_details").on("click", function(event) {
+    event.preventDefault()
     var $container = $(this).parent()
     $container.find('.exception_details_view').toggle()
     $container.find('.exception_details_form').toggle()
