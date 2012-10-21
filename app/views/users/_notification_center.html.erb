@@ -1,10 +1,13 @@
 <%= content_tag :div, :class => "tab-content", :id => "tab-content-notifications", :style => (params[:tab] != "notifications" ? "display:none" : "") do %>
 
-<form accept-charset="UTF-8" action="#" class="edit_user" id="my_account_form" method="get">
+<% opts = @user.notification_preferences %>
+
+<%= labelled_form_for :user, @user, :url => { :action => "account" }, :html => { :id => 'notification_options_form', :method => :post } do |f| %>
+<%= labelled_fields_for :notification_pref, @user.pref do |pref_fields| %>
 
 <fieldset class="box container">
   <p><label>
-    <input id=no_notification_at_all type=checkbox />
+    <%= check_box_tag 'pref[none_at_all]', 1, opts[:none_at_all] == '1' %>
     <%= l(:label_user_mail_no_mail_at_all) %> <em class=info style="display:inline">(<%= l(:label_not_recommended) %>)</em>
   </label></p>
 
@@ -13,32 +16,41 @@
       <legend style="color:#36C"><%= l(:text_user_mail_want_to_be_notified) %></legend>
       <p>
         <label>
-          <input type=checkbox checked=checked id=notifications_for_all_events />
-          <%= l(:label_user_mail_option_all) %>
+          <%= check_box_tag 'pref[all_events]', 1, opts[:all_events] == '1' %>
+          <%= l(:label_user_mail_for_all_events_on_my_projects) %>
         </label>
       </p>
 
       <dl class=depends-container>
         <dt><%= l(:label_issue_plural) %></dt>
+      <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:issue_tracking) %>
         <dd>
-          <select id="notification_for_issues" class="has-depends">
-            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
-            <option value="custom"><%= l(:label_user_mail_custom_notifications) %></option>
-            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
-          </select>
+          <%= select_tag "pref[by_module][issues]",
+                         options_for_select({
+                           l(:label_user_mail_all_notifications) => 'all',
+                           l(:label_user_mail_custom_notifications) => 'custom',
+                           l(:label_user_mail_no_notification) => 'none'
+                         }, opts[:by_module][:issues]),
+                         :class => "has-depends" %>
         </dd>
         <dd class="depends"><label>
-          <input type=checkbox /> <%= l(:label_user_mail_issues_if_author) %>
+          <%= check_box_tag 'pref[by_module][issues_custom][if_author]', 1, opts[:by_module][:issues_custom][:if_author] == '1' %>
+          <%= l(:label_user_mail_issues_if_author) %>
         </label></dd>
         <dd class="depends"><label>
-          <input type=checkbox /> <%= l(:label_user_mail_issues_if_assignee) %>
+          <%= check_box_tag 'pref[by_module][issues_custom][if_assignee]', 1, opts[:by_module][:issues_custom][:if_assignee] == '1' %>
+          <%= l(:label_user_mail_issues_if_assignee) %>
         </label></dd>
         <dd class="depends"><label>
-          <input type=checkbox /> <%= l(:label_user_mail_issues_if_other) %>
+          <%= check_box_tag 'pref[by_module][issues_custom][others]', 1, opts[:by_module][:issues_custom][:others] == '1' %>
+          <%= l(:label_user_mail_issues_if_other) %>
         </label></dd>
         <dd class="depends"><em class="info">
           <%= l(:text_user_mail_issues_info_watchers) %>
         </em></dd>
+      <% else %>
+        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
+      <% end %>
       </dl>
 
       <hr>
@@ -46,10 +58,15 @@
       <dl>
         <dt><%= l(:label_news_plural) %></dt>
         <dd>
-          <select id="notification_for_news">
-            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
-            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
-          </select>
+        <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:news) %>
+          <%= select_tag "pref[by_module][news]",
+                         options_for_select({
+                           l(:label_user_mail_all_notifications) => 'all',
+                           l(:label_user_mail_no_notification) => 'none'
+                         }, opts[:by_module][:news]) %>
+        <% else %>
+          <em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em>
+        <% end %>
         </dd>
       </dl>
 
@@ -57,12 +74,16 @@
 
       <dl>
         <dt><%= l(:label_document_plural) %></dt>
-        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
-        <dd style="display:none">
-          <select id="notification_for_documents">
-            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
-            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
-          </select>
+        <dd>
+        <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:documents) %>
+          <%= select_tag "pref[by_module][documents]",
+                         options_for_select({
+                           l(:label_user_mail_all_notifications) => 'all',
+                           l(:label_user_mail_no_notification) => 'none'
+                         }, opts[:by_module][:documents]) %>
+        <% else %>
+          <em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em>
+        <% end %>
         </dd>
       </dl>
 
@@ -70,12 +91,16 @@
 
       <dl>
         <dt><%= l(:label_file_plural) %></dt>
-        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
-        <dd style="display:none">
-          <select id="notification_for_files">
-            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
-            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
-          </select>
+        <dd>
+        <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:files) %>
+          <%= select_tag "pref[by_module][files]",
+                         options_for_select({
+                           l(:label_user_mail_all_notifications) => 'all',
+                           l(:label_user_mail_no_notification) => 'none'
+                         }, opts[:by_module][:files]) %>
+        <% else %>
+          <em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em>
+        <% end %>
         </dd>
       </dl>
 
@@ -83,12 +108,16 @@
 
       <dl>
         <dt><%= l(:label_board_plural) %></dt>
-        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
-        <dd style="display:none">
-          <select id="notification_for_forums">
-            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
-            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
-          </select>
+        <dd>
+        <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:boards) %>
+          <%= select_tag "pref[by_module][boards]",
+                         options_for_select({
+                           l(:label_user_mail_all_notifications) => 'all',
+                           l(:label_user_mail_no_notification) => 'none'
+                         }, opts[:by_module][:boards]) %>
+        <% else %>
+          <em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em>
+        <% end %>
         </dd>
       </dl>
 
@@ -96,12 +125,16 @@
 
       <dl>
         <dt><%= l(:label_wiki) %></dt>
-        <dd><em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em></dd>
-        <dd style="display:none">
-          <select id="notification_for_wikis">
-            <option value="all"><%= l(:label_user_mail_all_notifications) %></option>
-            <option value="none"><%= l(:label_user_mail_no_notification) %></option>
-          </select>
+        <dd>
+        <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:wiki) %>
+          <%= select_tag "pref[by_module][wiki]",
+                         options_for_select({
+                           l(:label_user_mail_all_notifications) => 'all',
+                           l(:label_user_mail_no_notification) => 'none'
+                         }, opts[:by_module][:wiki]) %>
+        <% else %>
+          <em class=info><%= l(:text_user_mail_notification_disabled_by_admin) %></em>
+        <% end %>
         </dd>
       </dl>
 
@@ -114,33 +147,73 @@
       <dl>
         <dt><%= l(:label_general) %></dt>
         <dd>
-          <%= l(:label_user_mail_exception_for_own_changes) %>
-          <%= check_box_tag 'no_self_notified', 1, @user.pref[:no_self_notified] %>
+          <label>
+            <%= l(:label_user_mail_exception_for_own_changes) %>
+            <%= check_box_tag 'pref[exceptions][no_self_notified]', 1, opts[:exceptions][:no_self_notified] == '1' %>
+          </label>
         </dd>
         <dd>
           <%= l(:label_user_mail_exception_for_some_projects) %>
-          <a href="#" onclick="alert('blah'); return false"><%= l(:button_change).downcase %></a>
+          <%= link_to l(:button_change).downcase, '#', :class => 'toggle_exception_details' %>
+          <p class=exception_details_view></p>
+          <p class=exception_details_form style="display:none">
+          <% render_project_nested_lists(User.current.projects) do |project| %>
+            <label style="display:block;margin-left:<%= project.level * 20 %>px">
+              <%= check_box_tag 'pref[exceptions][for_projects][]', project.id, opts[:exceptions][:for_projects].include?(project.id) %>
+              <span class=name><%= project.name %></span>
+            </label>
+          <% end %>
+          </p>
         </dd>
         <dd>
-            <%= l(:label_user_mail_exception_for_some_roles) %>
-            <a href="#" onclick="alert('blah'); return false"><%= l(:button_change).downcase %></a>
-            <p style="display:none">
-            <% Role.all.each do |role| %>
-              <label><input type=checkbox /> <%= role.name %></label><br>
-            <% end %>
-            </p>
+          <%= l(:label_user_mail_exception_for_some_roles) %>
+          <%= link_to l(:button_change).downcase, '#', :class => 'toggle_exception_details' %>
+          <p class=exception_details_view></p>
+          <p class=exception_details_form style="display:none">
+          <% User.current.projects_by_role.each do |role, projects| %>
+            <label>
+              <%= check_box_tag 'pref[exceptions][for_roles][]', role.id, opts[:exceptions][:for_roles].include?(role.id) %>
+              <span class=name><%= role.name %></span>
+              <em class=inline-info>(<%= l(:label_x_projects, :count => projects.count) %>)</em>
+            </label><br>
+          <% end %>
+          </p>
         </dd>
       </dl>
       <hr>
       <dl>
         <dt><%= l(:label_issue_plural) %></dt>
         <dd>
-          <%= l(:label_user_mail_exception_for_issue_updates) %>
-          <input type=checkbox />
+          <label>
+            <%= l(:label_user_mail_exception_for_issue_updates) %>
+            <%= check_box_tag 'pref[exceptions][no_issue_updates]', 1, opts[:exceptions][:no_issue_updates] == '1' %>
+          </label>
         </dd>
         <dd>
           <%= l(:label_user_mail_exception_for_some_trackers) %>
-          <a href="#" onclick="alert('blah'); return false"><%= l(:button_change).downcase %></a>
+          <%= link_to l(:button_change).downcase, '#', :class => 'toggle_exception_details' %>
+          <p class=exception_details_view></p>
+          <p class=exception_details_form style="display:none">
+          <% Tracker.sorted.each do |tracker| %>
+            <label>
+              <%= check_box_tag 'pref[exceptions][for_issue_trackers][]', tracker.id, opts[:exceptions][:for_issue_trackers].include?(tracker.id) %>
+              <span class=name><%= tracker.name %></span>
+            </label><br>
+          <% end %>
+          </p>
+        </dd>
+        <dd>
+          <%= l(:label_user_mail_exception_for_some_priorities) %>
+          <%= link_to l(:button_change).downcase, '#', :class => 'toggle_exception_details' %>
+          <p class=exception_details_view></p>
+          <p class=exception_details_form style="display:none">
+          <% IssueStatus.sorted.each do |status| %>
+            <label>
+              <%= check_box_tag 'pref[exceptions][for_issue_priorities][]', status.id, opts[:exceptions][:for_issue_priorities].include?(status.id) %>
+              <span class=name><%= status.name %></span>
+            </label><br>
+          <% end %>
+          </p>
         </dd>
       </dl>
       <p><em class="info">
@@ -153,11 +226,12 @@
 <fieldset class="box container" id=other-mail-address>
   <p>
     <label>
-      <input id=notification-to-other-address type=checkbox />
+      <%= check_box_tag 'pref[other_notification_address_check]', 1, opts[:other_notification_address].present? %>
       <%= l(:text_i_want_to_be_notified_to_an_other_address) %>
       <em class=info style="display:inline">(<%= l(:text_other_address_example) %>)</em>
     </label>
-    <input type=text id=other-address class=other-address placeholder="mail@example.com" />
+    <%= text_field_tag 'pref[other_notification_address]', opts[:other_notification_address],
+                       :placeholder => 'mail@example.com', :class => 'other-address' %>
   </p>
 </fieldset>
 
@@ -170,9 +244,10 @@
   <input type="submit" value="<%= l(:button_save) %>" />
 </div>
 
-</form>
+<% end #fields %>
+<% end #form %>
 
-<% end %>
+<% end #div %>
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'redmine_notification_center', :plugin => :redmine_notification_center %>

@@ -22,4 +22,5 @@ ActionDispatch::Callbacks.to_prepare do
   unless Rails.env.test?
     require_dependency 'redmine_notification_center/mailer_patch'
   end
+  require_dependency 'redmine_notification_center/user_patch'
 end

@@ -24,7 +24,7 @@ end
 Deface::Override.new :virtual_path  => 'my/account',
                      :name          => 'surround-old-account-content-with-general-tab-1',
                      :insert_before => 'code[erb-loud]:contains("labelled_form_for")',
-                     :text          => '<%= %(<div class="tab-content" id="tab-content-general" #{%(style="display:none") if params[:tab] == "notifications"}">).html_safe %>'
+                     :text          => '<%= %(<div class="tab-content" id="tab-content-general" #{%(style="display:none") if params[:tab] == "notifications"}>).html_safe %>'
                      #we don't use standard html above, or deface will try to close the <div> immediately
 
 Deface::Override.new :virtual_path  => 'my/account',

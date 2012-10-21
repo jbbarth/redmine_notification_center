@@ -6,10 +6,12 @@
 #tab-content-notifications select { margin:0 4px 4px 0; min-width:220px; width:auto; }
 #tab-content-notifications input[type=checkbox] { margin:2px 5px; }
 #tab-content-notifications em.info { padding:0 5px; }
+#tab-content-notifications em.inline-info { padding:0 5px; font-size:90%; font-style:normal; color:#888; display:inline; }
 #tab-content-notifications dl { margin:10px 5px; }
 #tab-content-notifications dl dt { float:left; font-weight:bold; padding:5px 15px 5px 5px; width:100px; text-align:right; }
-#tab-content-notifications dl dd { margin-left:125px; padding:5px 0; }
+#tab-content-notifications dl dd { margin-left:125px; padding:5px 0; min-height:22px; }
 #tab-content-notifications hr { background-color:#eee; }
 #tab-content-notifications .section { float:left; box-sizing:border-box; padding:0; margin:0; width:50%; min-width:570px; }
 #tab-content-notifications .other-address { display:block; margin:8px 15px 0 22px; width:300px; }
 #tab-content-notifications .alert-no-notification { color:red;border:1px solid red; background-color:#fdd; padding:10px; margin:10px 0; text-align:center; }
+#tab-content-notifications .exception_details_view { padding:2px 6px; margin:0 8px; color:#888; }
