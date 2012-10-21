@@ -32,9 +32,6 @@ handleExceptionsDetails = function(element) {
                         .join(', ')
   $form.siblings('.exception_details_view').html(selected_names)
 }
-///            <%= link_to l(:button_change).downcase, '#', :class => 'toggle_exception_details' %>
-///            <p class=exception_details_view>
-///            <p class=exception_details_form style="display:none">
 $(function() {
   //display fine grained options
   $(".has-depends").each(function() { displayNotificationDependsOptions($(this).attr('id')) })
