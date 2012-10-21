@@ -2,7 +2,7 @@
 
 <% opts = @user.notification_preferences %>
 
-<%= labelled_form_for :user, @user, :url => { :action => "account" }, :html => { :id => 'notification_options_form', :method => :post } do |f| %>
+<%= labelled_form_for :user, @user, :url => { :controller => "notification_preferences", :action => "update" }, :html => { :id => 'notification_options_form', :method => :put } do |f| %>
 <%= labelled_fields_for :notification_pref, @user.pref do |pref_fields| %>
 
 <fieldset class="box container">
