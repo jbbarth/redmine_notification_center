@@ -161,6 +161,7 @@
             <label style="display:block;margin-left:<%= project.level * 20 %>px">
               <%= check_box_tag 'pref[exceptions][for_projects][]', project.id, opts[:exceptions][:for_projects].include?(project.id) %>
               <span class=name><%= project.name %></span>
+              <em class=inline-info>(<%= User.current.roles_for_project(project).map(&:name).join(', ') %>)</em>
             </label>
           <% end %>
           </p>
