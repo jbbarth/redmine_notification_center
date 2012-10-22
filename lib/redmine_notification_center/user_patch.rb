@@ -1,6 +1,3 @@
-require_dependency 'project' #see: http://www.redmine.org/issues/11035
-require_dependency 'principal'
-require_dependency 'user'
 
 module RedmineNotificationCenter
   module UserPatch
@@ -22,39 +19,35 @@ module RedmineNotificationCenter
       }
     }
 
-    module InstanceMethods
-      def notification_preferences
-        DEFAULT_NOTIFICATION_OPTIONS.deep_merge(pref[:notification_preferences] || translate_from_old_mail_notification)
-      end
+    def notification_preferences
+      DEFAULT_NOTIFICATION_OPTIONS.deep_merge(pref[:notification_preferences] || translate_from_old_mail_notification)
+    end
 
-      private
-      def translate_from_old_mail_notification
-        #we use Hash#deep_dup here so that internal hashes are not changed
-        options = DEFAULT_NOTIFICATION_OPTIONS.deep_dup
-        case mail_notification
-        when 'all'
-          #nothing to do
-        when 'only_my_events'
-          options[:all_events] = '0'
-          options[:by_module][:issues] = 'custom'
-          options[:by_module][:issues_custom][:others] = '0'
-        when 'only_assigned'
-          options[:all_events] = '0'
-          options[:by_module][:issues] = 'custom'
-          options[:by_module][:issues_custom][:others] = '0'
-          options[:by_module][:issues_custom][:if_author] = '0'
-        when 'only_owner'
-          options[:all_events] = '0'
-          options[:by_module][:issues] = 'custom'
-          options[:by_module][:issues_custom][:others] = '0'
-          options[:by_module][:issues_custom][:if_assignee] = '0'
-        when 'none'
-          options[:none_at_all] = '1'
-        end
-        options
+    private
+    def translate_from_old_mail_notification
+      #we use Hash#deep_dup here so that internal hashes are not changed
+      options = DEFAULT_NOTIFICATION_OPTIONS.deep_dup
+      case mail_notification
+      when 'all'
+        #nothing to do
+      when 'only_my_events'
+        options[:all_events] = '0'
+        options[:by_module][:issues] = 'custom'
+        options[:by_module][:issues_custom][:others] = '0'
+      when 'only_assigned'
+        options[:all_events] = '0'
+        options[:by_module][:issues] = 'custom'
+        options[:by_module][:issues_custom][:others] = '0'
+        options[:by_module][:issues_custom][:if_author] = '0'
+      when 'only_owner'
+        options[:all_events] = '0'
+        options[:by_module][:issues] = 'custom'
+        options[:by_module][:issues_custom][:others] = '0'
+        options[:by_module][:issues_custom][:if_assignee] = '0'
+      when 'none'
+        options[:none_at_all] = '1'
       end
+      options
     end
   end
 end
-
-User.send(:include, RedmineNotificationCenter::UserPatch)

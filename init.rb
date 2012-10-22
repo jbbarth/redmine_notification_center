@@ -22,5 +22,11 @@ ActionDispatch::Callbacks.to_prepare do
   unless Rails.env.test?
     require_dependency 'redmine_notification_center/mailer_patch'
   end
+  # patch to User
+  # see: http://www.redmine.org/issues/11035
+  require_dependency 'project'
+  require_dependency 'principal'
+  require_dependency 'user'
   require_dependency 'redmine_notification_center/user_patch'
+  User.send(:include, RedmineNotificationCenter::UserPatch)
 end
