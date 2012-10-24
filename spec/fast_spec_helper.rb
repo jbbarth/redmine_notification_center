@@ -11,14 +11,11 @@ require 'pry'
 $:.<< File.expand_path('../../app/models', __FILE__)
 $:.<< File.expand_path('../../lib', __FILE__)
 
-#rspec config
+#rspec base config
 RSpec.configure do |config|
   config.mock_with :rspec
 end
 
-#custom matchers
-RSpec::Matchers.define :receive_notifications_for do |*args|
-  match do |user|
-    RedmineNotificationCenter::NotificationEvent.new(*args).recipients.include?(user)
-  end
-end
+#support things
+require File.expand_path('../support/fake_models', __FILE__)
+require File.expand_path('../support/custom_matchers', __FILE__)
