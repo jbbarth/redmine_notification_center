@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'redmine_notification_center/user_patch'
 require 'redmine_notification_center/notification_event'
+require 'redmine_notification_center/notification_policy'
 
 class FakeUser
   include RedmineNotificationCenter::UserPatch
