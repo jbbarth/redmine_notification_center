@@ -24,13 +24,13 @@ Here's how the structure looks (ruby-ish syntax):
   :none_at_all => "1|0",
   :all_events  => "1|0",
   :by_module   => {
-    :issues    => "all|none|custom",
-    :issues_custom => {
+    :issue_tracking => "all|none|custom",
+    :issue_tracking_custom => {
       :if_author   => "1|0",
       :if_assignee => "1|0",
       :others      => "1|0"
     },
-    :new       => "all|none",
+    :news      => "all|none",
     :documents => "all|none",
     :files     => "all|none",
     :boards    => "all|none",
@@ -53,13 +53,13 @@ Default options look like this:
   :none_at_all => "0",
   :all_events  => "1",
   :by_module   => {
-    :issues    => "all",
-    :issues_custom => {
+    :issue_tracking => "all",
+    :issue_tracking_custom => {
       :if_author   => "1",
       :if_assignee => "1",
       :others      => "1"
     },
-    :new       => "all",
+    :news      => "all",
     :documents => "all",
     :files     => "all",
     :boards    => "all",

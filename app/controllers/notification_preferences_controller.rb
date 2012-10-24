@@ -41,7 +41,7 @@ class NotificationPreferencesController < ApplicationController
   def zero_options
     {
       :none_at_all => '0', :all_events  => '0', :other_notification_address => '',
-      :by_module   => { :issues_custom => { :if_author => '0', :if_assignee => '0', :others => '0' } },
+      :by_module   => { :issue_tracking_custom => { :if_author => '0', :if_assignee => '0', :others => '0' } },
       :exceptions => { :no_self_notified => '0', :no_issue_updates => '0' }
     }
   end

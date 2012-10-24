@@ -29,10 +29,10 @@ class UserPatchTest < ActiveSupport::TestCase
         pref = User.find(1).notification_preferences
         assert_equal '0', pref[:all_events], 'all_events'
         assert_equal '0', pref[:none_at_all], 'none_at_all'
-        assert_equal 'custom', pref[:by_module][:issues], 'by_module issues'
-        assert_equal '1', pref[:by_module][:issues_custom][:if_author], 'issues_custom if_author'
-        assert_equal '1', pref[:by_module][:issues_custom][:if_assignee], 'issues_custom if_assignee'
-        assert_equal '0', pref[:by_module][:issues_custom][:others], 'issues_custom others'
+        assert_equal 'custom', pref[:by_module][:issue_tracking], 'by_module issue_tracking'
+        assert_equal '1', pref[:by_module][:issue_tracking_custom][:if_author], 'issue_tracking_custom if_author'
+        assert_equal '1', pref[:by_module][:issue_tracking_custom][:if_assignee], 'issue_tracking_custom if_assignee'
+        assert_equal '0', pref[:by_module][:issue_tracking_custom][:others], 'issue_tracking_custom others'
       end
 
       should ':only_assigned' do
@@ -40,10 +40,10 @@ class UserPatchTest < ActiveSupport::TestCase
         pref = User.find(1).notification_preferences
         assert_equal '0', pref[:all_events], 'all_events'
         assert_equal '0', pref[:none_at_all], 'none_at_all'
-        assert_equal 'custom', pref[:by_module][:issues], 'by_module issues'
-        assert_equal '0', pref[:by_module][:issues_custom][:if_author], 'issues_custom if_author'
-        assert_equal '1', pref[:by_module][:issues_custom][:if_assignee], 'issues_custom if_assignee'
-        assert_equal '0', pref[:by_module][:issues_custom][:others], 'issues_custom others'
+        assert_equal 'custom', pref[:by_module][:issue_tracking], 'by_module issue_tracking'
+        assert_equal '0', pref[:by_module][:issue_tracking_custom][:if_author], 'issue_tracking_custom if_author'
+        assert_equal '1', pref[:by_module][:issue_tracking_custom][:if_assignee], 'issue_tracking_custom if_assignee'
+        assert_equal '0', pref[:by_module][:issue_tracking_custom][:others], 'issue_tracking_custom others'
       end
 
       should ':only_owner' do
@@ -51,10 +51,10 @@ class UserPatchTest < ActiveSupport::TestCase
         pref = User.find(1).notification_preferences
         assert_equal '0', pref[:all_events], 'all_events'
         assert_equal '0', pref[:none_at_all], 'none_at_all'
-        assert_equal 'custom', pref[:by_module][:issues], 'by_module issues'
-        assert_equal '1', pref[:by_module][:issues_custom][:if_author], 'issues_custom if_author'
-        assert_equal '0', pref[:by_module][:issues_custom][:if_assignee], 'issues_custom if_assignee'
-        assert_equal '0', pref[:by_module][:issues_custom][:others], 'issues_custom others'
+        assert_equal 'custom', pref[:by_module][:issue_tracking], 'by_module issue_tracking'
+        assert_equal '1', pref[:by_module][:issue_tracking_custom][:if_author], 'issue_tracking_custom if_author'
+        assert_equal '0', pref[:by_module][:issue_tracking_custom][:if_assignee], 'issue_tracking_custom if_assignee'
+        assert_equal '0', pref[:by_module][:issue_tracking_custom][:others], 'issue_tracking_custom others'
       end
 
       should 'block all notifications if :none' do

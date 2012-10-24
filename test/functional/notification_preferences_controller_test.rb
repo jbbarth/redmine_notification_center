@@ -15,7 +15,7 @@ class NotificationPreferencesControllerTest < ActionController::TestCase
     assert_equal expected, value, "Bad value for #{keys.join('.')}, expected #{expected.inspect}, got #{value.inspect}"
   end
 
-  # {"pref"=>{"all_events"=>"1", "by_module"=>{"issues_custom"=>{"if_author"=>"1", "if_assignee"=>"1", "others"=>"1"}},
+  # {"pref"=>{"all_events"=>"1", "by_module"=>{"issue_tracking_custom"=>{"if_author"=>"1", "if_assignee"=>"1", "others"=>"1"}},
   #           "other_notification_address"=>""}}
   context 'PUT /my/notification_preferences' do
     should 'redirect to /my/account?tab=notifications' do
@@ -51,7 +51,7 @@ class NotificationPreferencesControllerTest < ActionController::TestCase
       end
     end
 
-    context ':by_module :issues option' do
+    context ':by_module :issue_tracking option' do
     end
 
     context ':exceptions :for_projects' do

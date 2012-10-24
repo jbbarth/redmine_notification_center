@@ -25,24 +25,24 @@
         <dt><%= l(:label_issue_plural) %></dt>
       <% if RedmineNotificationCenter::Utils.module_sends_notifications?(:issue_tracking) %>
         <dd>
-          <%= select_tag "pref[by_module][issues]",
+          <%= select_tag "pref[by_module][issue_tracking]",
                          options_for_select({
                            l(:label_user_mail_all_notifications) => 'all',
                            l(:label_user_mail_custom_notifications) => 'custom',
                            l(:label_user_mail_no_notification) => 'none'
-                         }, opts[:by_module][:issues]),
+                         }, opts[:by_module][:issue_tracking]),
                          :class => "has-depends" %>
         </dd>
         <dd class="depends"><label>
-          <%= check_box_tag 'pref[by_module][issues_custom][if_author]', 1, opts[:by_module][:issues_custom][:if_author] == '1' %>
+          <%= check_box_tag 'pref[by_module][issue_tracking_custom][if_author]', 1, opts[:by_module][:issue_tracking_custom][:if_author] == '1' %>
           <%= l(:label_user_mail_issues_if_author) %>
         </label></dd>
         <dd class="depends"><label>
-          <%= check_box_tag 'pref[by_module][issues_custom][if_assignee]', 1, opts[:by_module][:issues_custom][:if_assignee] == '1' %>
+          <%= check_box_tag 'pref[by_module][issue_tracking_custom][if_assignee]', 1, opts[:by_module][:issue_tracking_custom][:if_assignee] == '1' %>
           <%= l(:label_user_mail_issues_if_assignee) %>
         </label></dd>
         <dd class="depends"><label>
-          <%= check_box_tag 'pref[by_module][issues_custom][others]', 1, opts[:by_module][:issues_custom][:others] == '1' %>
+          <%= check_box_tag 'pref[by_module][issue_tracking_custom][others]', 1, opts[:by_module][:issue_tracking_custom][:others] == '1' %>
           <%= l(:label_user_mail_issues_if_other) %>
         </label></dd>
         <dd class="depends"><em class="info">

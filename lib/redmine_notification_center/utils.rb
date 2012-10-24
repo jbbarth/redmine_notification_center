@@ -5,8 +5,8 @@ module RedmineNotificationCenter
     # { event => module }
     KNOWN_EVENTS = { :attachments_added     => :files,
                      :document_added        => :documents,
-                     :issue_added           => :issues,
-                     :issue_edited          => :issues,
+                     :issue_added           => :issue_tracking,
+                     :issue_edited          => :issue_tracking,
                      :message_posted        => :boards,
                      :news_added            => :news,
                      :news_comment_added    => :news,
