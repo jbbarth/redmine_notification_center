@@ -1,7 +1,7 @@
 require File.expand_path('../../fast_spec_helper', __FILE__)
 require 'active_support/all'
 require 'redmine_notification_center/user_patch'
-require 'redmine_notification_center/event'
+require 'redmine_notification_center/notification_event'
 
 # some fake classes
 class FakeUser
@@ -19,10 +19,10 @@ class FakeIssue
 end
 
 # fast tests !
-describe RedmineNotificationCenter::Event do
+describe RedmineNotificationCenter::NotificationEvent do
 
   #ease of use
-  Event = RedmineNotificationCenter::Event
+  Event = RedmineNotificationCenter::NotificationEvent
 
   describe '#new' do
     it 'accepts some parameters' do

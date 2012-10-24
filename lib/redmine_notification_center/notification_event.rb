@@ -1,6 +1,6 @@
 # Turns an A::R object into an event before notification
 module RedmineNotificationCenter
-  class Event < Struct.new(:type, :object)
+  class NotificationEvent < Struct.new(:type, :object)
     KNOWN_EVENTS = %w(attachments_added document_added issue_added issue_edited
                       message_posted news_added news_comment_added wiki_content_added wiki_content_updated)
 
