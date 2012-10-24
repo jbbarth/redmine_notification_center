@@ -15,7 +15,7 @@ module RedmineNotificationCenter
 
     def recipients
       candidates.select do |candidate|
-        candidate.wants_notifications_for(type, object)
+        candidate.wants_notifications_for(self)
       end
     end
   end

@@ -23,7 +23,8 @@ module RedmineNotificationCenter
     end
 
     #TODO: needs refactoring
-    def wants_notifications_for(event, object)
+    def wants_notifications_for(notification_event)
+      event, object = notification_event.type, notification_event.object
       notif = notification_preferences
       return false if notif[:none_at_all] == '1'
       #TODO: exceptions! + don't use issue exceptions if issue author, issue assignee or watcher
