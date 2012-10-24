@@ -1,4 +1,3 @@
-
 module RedmineNotificationCenter
   module UserPatch
     extend ActiveSupport::Concern
@@ -21,6 +20,28 @@ module RedmineNotificationCenter
 
     def notification_preferences
       DEFAULT_NOTIFICATION_OPTIONS.deep_merge(pref[:notification_preferences] || translate_from_old_mail_notification)
+    end
+
+    #TODO: needs refactoring
+    def wants_notifications_for(event, object)
+      notif = notification_preferences
+      return false if notif[:none_at_all] == '1'
+      #TODO: exceptions! + don't use issue exceptions if issue author, issue assignee or watcher
+      return true if notif[:all_events] == '1'
+      #TODO: return true or false immediately if module identified && by_module.<module> == 'all' or 'none'
+      #custom modules
+      if [:issue_added, :issue_edited].include?(event) && notif[:by_module][:issues] == 'custom'
+        #TODO: handle watcher case
+        if object.author == self || object.author_was == self
+          return notif[:by_module][:issues_custom][:if_author] == '1'
+        end
+        if object.assignee == self || object.assignee_was == self
+          return notif[:by_module][:issues_custom][:if_assignee] == '1'
+        end
+        return notif[:by_module][:issues_custom][:others] == '1'
+      end
+      #TODO: we shouldn't reach this line ; replace it with an exception when every possible event is handled
+      true
     end
 
     private
