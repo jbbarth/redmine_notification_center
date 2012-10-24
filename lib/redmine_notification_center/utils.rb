@@ -2,8 +2,20 @@ module RedmineNotificationCenter
   module Utils
     extend self #so that method can be used directly on this namespace
 
-    KNOWN_EVENTS = %w(attachments_added document_added issue_added issue_edited
-                      message_posted news_added news_comment_added wiki_content_added wiki_content_updated)
+    # { event => module }
+    KNOWN_EVENTS = { :attachments_added     => :files,
+                     :document_added        => :documents,
+                     :issue_added           => :issues,
+                     :issue_edited          => :issues,
+                     :message_posted        => :boards,
+                     :news_added            => :news,
+                     :news_comment_added    => :news,
+                     :wiki_content_added    => :wiki,
+                     :wiki_content_updated  => :wiki }
+
+    def known_event?(event)
+      KNOWN_EVENTS.keys.include?(event)
+    end
 
     def module_sends_notifications?(mod)
       pattern = mod.to_s.singularize

@@ -2,7 +2,7 @@
 module RedmineNotificationCenter
   class NotificationEvent < Struct.new(:type, :object)
     def initialize(type, object)
-      raise ArgumentError, "Unknown event type '#{type}'" unless Utils::KNOWN_EVENTS.include?(type.to_s)
+      raise ArgumentError, "Unknown event type '#{type}'" unless Utils::known_event?(type)
       super
     end
 
