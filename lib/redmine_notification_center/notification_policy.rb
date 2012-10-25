@@ -5,13 +5,19 @@ module RedmineNotificationCenter
     end
 
     def should_be_notified_for?(notification_event)
+      event_type, object = notification_event.type, notification_event.object
+      module_name = Utils.module_from_event(event_type)
       if user_doesnt_want_any_notification
         false
-      elsif user_wants_all_notifications && exceptions_dont_apply
+      elsif matches_a_global_exception(notification_event)
+        false
+      elsif module_name == :issue_tracking && matches_an_issue_exception(notification_event)
+        false
+      elsif user_wants_all_notifications
         true
       else
-        event_type, object = notification_event.type, notification_event.object
-        case Utils.module_from_event(event_type)
+        # delegate to module specific methods
+        case module_name
         when :files
           files_notification_for(event_type, object)
         when :documents
@@ -25,8 +31,7 @@ module RedmineNotificationCenter
         when :wiki
           wiki_notification_for(event_type, object)
         else
-          #TODO: we shouldn't reach this line ; replace it with an exception when every possible event_type is handled
-          raise "You should never reach this line"
+          raise "You should never reach this line. The code might be missing an event type above ?"
         end
       end
     end
@@ -44,9 +49,17 @@ module RedmineNotificationCenter
       pref[:all_events] == '1'
     end
 
+    def matches_a_global_exception(notification_event)
+      if pref[:exceptions][:no_self_notified] == '1' && notification_event.object.author == @user
+        true
+      else
+        false
+      end
+    end
+
     #TODO: exceptions! + don't use issue exceptions if issue author, issue assignee or watcher
-    def exceptions_dont_apply
-      true #no exception for now!
+    def matches_an_issue_exception(notification_event)
+      false
     end
 
     # 
