@@ -10,10 +10,11 @@ class FakeUser
   def initialize(mail_notification); @mail_notification = mail_notification; end
   def pref; @pref ||= {}; end
   def notification_preferences=(hash); pref[:notification_preferences] = hash; end
+  def is_or_belongs_to?(principal); self == principal; end
 end
 
 class FakeIssue
   def author; nil; end
-  def assignee; nil; end
-  alias :assignee_was :assignee
+  def assigned_to; nil; end
+  alias :assigned_to_was :assigned_to
 end

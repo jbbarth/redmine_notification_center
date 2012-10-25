@@ -21,7 +21,7 @@ describe RedmineNotificationCenter::NotificationEvent do
     before { Event.any_instance.stub(:candidates) { [*subject] } }
     let(:model) { double('model') }
     let(:issue_where_author)   { i = FakeIssue.new; i.stub('author') { subject }; i }
-    let(:issue_where_assignee) { i = FakeIssue.new; i.stub('assignee') { subject }; i }
+    let(:issue_where_assigned) { i = FakeIssue.new; i.stub('assigned_to') { subject }; i }
     let(:issue_any)          { FakeIssue.new }
 
     context "user with NO notification at all" do
@@ -59,8 +59,8 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should receive_notifications_for(:document_added, model) }
       it { should receive_notifications_for(:issue_added, issue_where_author) }
       it { should receive_notifications_for(:issue_edited, issue_where_author) }
-      it { should receive_notifications_for(:issue_added, issue_where_assignee) }
-      it { should receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should receive_notifications_for(:issue_added, issue_where_assigned) }
+      it { should receive_notifications_for(:issue_edited, issue_where_assigned) }
       it { should_not receive_notifications_for(:issue_added, issue_any) }
       it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should receive_notifications_for(:message_posted, model) }
@@ -77,8 +77,8 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should receive_notifications_for(:document_added, model) }
       it { should_not receive_notifications_for(:issue_added, issue_where_author) }
       it { should_not receive_notifications_for(:issue_edited, issue_where_author) }
-      it { should receive_notifications_for(:issue_added, issue_where_assignee) }
-      it { should receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should receive_notifications_for(:issue_added, issue_where_assigned) }
+      it { should receive_notifications_for(:issue_edited, issue_where_assigned) }
       it { should_not receive_notifications_for(:issue_added, issue_any) }
       it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should receive_notifications_for(:message_posted, model) }
@@ -95,8 +95,8 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should receive_notifications_for(:document_added, model) }
       it { should receive_notifications_for(:issue_added, issue_where_author) }
       it { should receive_notifications_for(:issue_edited, issue_where_author) }
-      it { should_not receive_notifications_for(:issue_added, issue_where_assignee) }
-      it { should_not receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should_not receive_notifications_for(:issue_added, issue_where_assigned) }
+      it { should_not receive_notifications_for(:issue_edited, issue_where_assigned) }
       it { should_not receive_notifications_for(:issue_added, issue_any) }
       it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should receive_notifications_for(:message_posted, model) }
@@ -116,8 +116,8 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should receive_notifications_for(:document_added, model) }
       it { should receive_notifications_for(:issue_added, issue_where_author) }
       it { should receive_notifications_for(:issue_edited, issue_where_author) }
-      it { should receive_notifications_for(:issue_added, issue_where_assignee) }
-      it { should receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should receive_notifications_for(:issue_added, issue_where_assigned) }
+      it { should receive_notifications_for(:issue_edited, issue_where_assigned) }
       it { should receive_notifications_for(:issue_added, issue_any) }
       it { should receive_notifications_for(:issue_edited, issue_any) }
       it { should receive_notifications_for(:message_posted, model) }
@@ -141,8 +141,8 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should_not receive_notifications_for(:document_added, model) }
       it { should_not receive_notifications_for(:issue_added, issue_where_author) }
       it { should_not receive_notifications_for(:issue_edited, issue_where_author) }
-      it { should_not receive_notifications_for(:issue_added, issue_where_assignee) }
-      it { should_not receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should_not receive_notifications_for(:issue_added, issue_where_assigned) }
+      it { should_not receive_notifications_for(:issue_edited, issue_where_assigned) }
       it { should_not receive_notifications_for(:issue_added, issue_any) }
       it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should_not receive_notifications_for(:message_posted, model) }

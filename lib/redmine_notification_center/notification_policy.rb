@@ -72,7 +72,7 @@ module RedmineNotificationCenter
         if object.author == @user
           return pref[:by_module][:issue_tracking_custom][:if_author] == '1'
         end
-        if object.assignee == @user || object.assignee_was == @user
+        if @user.is_or_belongs_to?(object.assigned_to) || @user.is_or_belongs_to?(object.assigned_to_was)
           return pref[:by_module][:issue_tracking_custom][:if_assignee] == '1'
         end
         return pref[:by_module][:issue_tracking_custom][:others] == '1'
