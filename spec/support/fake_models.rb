@@ -14,7 +14,6 @@ end
 
 class FakeIssue
   def author; nil; end
-  alias :author_was :author
   def assignee; nil; end
   alias :assignee_was :assignee
 end

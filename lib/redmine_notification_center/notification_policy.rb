@@ -69,7 +69,7 @@ module RedmineNotificationCenter
     def issue_tracking_notification_for(event_type, object)
       if pref[:by_module][:issue_tracking] == 'custom'
         #TODO: handle watcher case
-        if object.author == @user || object.author_was == @user
+        if object.author == @user
           return pref[:by_module][:issue_tracking_custom][:if_author] == '1'
         end
         if object.assignee == @user || object.assignee_was == @user
