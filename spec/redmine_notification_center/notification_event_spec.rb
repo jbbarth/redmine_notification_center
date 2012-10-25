@@ -105,5 +105,51 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should receive_notifications_for(:wiki_content_added, model) }
       it { should receive_notifications_for(:wiki_content_updated, model) }
     end
+
+    context "user with all notifications, but didn't check 'all events'" do
+      subject do
+        FakeUser.new('all').tap do |user|
+          user.notification_preferences=({:all_events => '0'})
+        end
+      end
+      it { should receive_notifications_for(:attachments_added, model) }
+      it { should receive_notifications_for(:document_added, model) }
+      it { should receive_notifications_for(:issue_added, issue_where_author) }
+      it { should receive_notifications_for(:issue_edited, issue_where_author) }
+      it { should receive_notifications_for(:issue_added, issue_where_assignee) }
+      it { should receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should receive_notifications_for(:issue_added, issue_any) }
+      it { should receive_notifications_for(:issue_edited, issue_any) }
+      it { should receive_notifications_for(:message_posted, model) }
+      it { should receive_notifications_for(:news_added, model) }
+      it { should receive_notifications_for(:news_comment_added, model) }
+      it { should receive_notifications_for(:wiki_content_added, model) }
+      it { should receive_notifications_for(:wiki_content_updated, model) }
+    end
+
+    context "user with no notification, but didn't check 'none at all'" do
+      subject do
+        FakeUser.new('all').tap do |user|
+          user.notification_preferences=({
+            :all_events => '0',
+            :by_module => { :issue_tracking => 'none', :files => 'none', :documents => 'none',
+                            :news=>'none', :wiki => 'none', :boards => 'none' }
+          })
+        end
+      end
+      it { should_not receive_notifications_for(:attachments_added, model) }
+      it { should_not receive_notifications_for(:document_added, model) }
+      it { should_not receive_notifications_for(:issue_added, issue_where_author) }
+      it { should_not receive_notifications_for(:issue_edited, issue_where_author) }
+      it { should_not receive_notifications_for(:issue_added, issue_where_assignee) }
+      it { should_not receive_notifications_for(:issue_edited, issue_where_assignee) }
+      it { should_not receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
+      it { should_not receive_notifications_for(:message_posted, model) }
+      it { should_not receive_notifications_for(:news_added, model) }
+      it { should_not receive_notifications_for(:news_comment_added, model) }
+      it { should_not receive_notifications_for(:wiki_content_added, model) }
+      it { should_not receive_notifications_for(:wiki_content_updated, model) }
+    end
   end
 end

@@ -8,7 +8,8 @@ class FakeUser
   include RedmineNotificationCenter::UserPatch
   attr_accessor :mail_notification
   def initialize(mail_notification); @mail_notification = mail_notification; end
-  def pref; {}; end
+  def pref; @pref ||= {}; end
+  def notification_preferences=(hash); pref[:notification_preferences] = hash; end
 end
 
 class FakeIssue

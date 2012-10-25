@@ -13,13 +13,13 @@ module RedmineNotificationCenter
         event_type, object = notification_event.type, notification_event.object
         case Utils.module_from_event(event_type)
         when :files
-          file_notification_for(event_type, object)
+          files_notification_for(event_type, object)
         when :documents
-          document_notification_for(event_type, object)
+          documents_notification_for(event_type, object)
         when :issue_tracking
-          issue_notification_for(event_type, object)
+          issue_tracking_notification_for(event_type, object)
         when :boards
-          board_notification_for(event_type, object)
+          boards_notification_for(event_type, object)
         when :news
           news_notification_for(event_type, object)
         when :wiki
@@ -52,24 +52,21 @@ module RedmineNotificationCenter
     # 
     # FILES
     #
-    def file_notification_for(event_type, object)
-      #TODO: be clever!
-      true
+    def files_notification_for(event_type, object)
+      pref[:by_module][:files] == 'all'
     end
 
     #
     # DOCUMENTS
     #
-    def document_notification_for(event_type, object)
-      #TODO: be clever!
-      true
+    def documents_notification_for(event_type, object)
+      pref[:by_module][:documents] == 'all'
     end
 
     #
     # ISSUES
     #
-    def issue_notification_for(event_type, object)
-      #TODO: return true or false immediately if module identified && by_module.<module> == 'all' or 'none'
+    def issue_tracking_notification_for(event_type, object)
       if pref[:by_module][:issue_tracking] == 'custom'
         #TODO: handle watcher case
         if object.author == @user || object.author_was == @user
@@ -80,32 +77,28 @@ module RedmineNotificationCenter
         end
         return pref[:by_module][:issue_tracking_custom][:others] == '1'
       end
-      #TODO: we shouldn't reach this line ; replace it with an exception when every possible event_type is handled
-      true
+      pref[:by_module][:issue_tracking] == 'all'
     end
 
     #
     # BOARDS
     #
-    def board_notification_for(event_type, object)
-      #TODO: be clever!
-      true
+    def boards_notification_for(event_type, object)
+      pref[:by_module][:boards] == 'all'
     end
 
     #
     # NEWS
     # 
     def news_notification_for(event_type, object)
-      #TODO: be clever!
-      true
+      pref[:by_module][:news] == 'all'
     end
 
     #
     # WIKI
     #
     def wiki_notification_for(event_type, object)
-      #TODO: be clever!
-      true
+      pref[:by_module][:wiki] == 'all'
     end
   end
 end
