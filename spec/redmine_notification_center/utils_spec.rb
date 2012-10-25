@@ -105,4 +105,14 @@ describe RedmineNotificationCenter::Utils do
       # no notification for this module for now...
     end
   end
+
+  describe '#module_from_event' do
+    it 'gets the module name associated to an event' do
+      U.module_from_event(:issue_added).should == :issue_tracking
+    end
+
+    it 'stays blank if event does not exist' do
+      U.module_from_event(:nonexistent).should be_nil
+    end
+  end
 end

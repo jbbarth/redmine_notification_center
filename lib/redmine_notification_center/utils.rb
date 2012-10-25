@@ -24,5 +24,9 @@ module RedmineNotificationCenter
       pattern = pattern+'_'
       Setting.notified_events.detect{|n| n.starts_with?(pattern)}
     end
+
+    def module_from_event(event)
+      KNOWN_EVENTS[event]
+    end
   end
 end
