@@ -50,7 +50,7 @@ module RedmineNotificationCenter
     end
 
     def matches_a_global_exception(notification_event)
-      if pref[:exceptions][:no_self_notified] == '1' && notification_event.object.author == @user
+      if pref[:exceptions][:no_self_notified] == '1' && NotificationAuthorFinder.new(notification_event.object).author == @user
         true
       else
         false

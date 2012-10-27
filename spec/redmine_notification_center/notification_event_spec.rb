@@ -153,16 +153,13 @@ describe RedmineNotificationCenter::NotificationEvent do
     end
 
     context "user don't want notifications for things he changes" do
-      before do
-        model.stub!(:author) { subject }
-      end
-
       subject do
         FakeUser.new('all').tap do |user|
           user.notification_preferences=({:exceptions => {:no_self_notified => '1'} })
         end
       end
 
+      before { RedmineNotificationCenter::NotificationAuthorFinder.any_instance.stub(:author) { subject } }
       it { should_not receive_notifications_for(:attachments_added, model) }
       it { should_not receive_notifications_for(:document_added, model) }
       it { should_not receive_notifications_for(:issue_added, model) }
