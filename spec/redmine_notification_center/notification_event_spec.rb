@@ -159,7 +159,7 @@ describe RedmineNotificationCenter::NotificationEvent do
         end
       end
 
-      before { RedmineNotificationCenter::NotificationAuthorFinder.any_instance.stub(:author) { subject } }
+      before { RedmineNotificationCenter::NotificationContextFinder.any_instance.stub(:author) { subject } }
       it { should_not receive_notifications_for(:attachments_added, model) }
       it { should_not receive_notifications_for(:document_added, model) }
       it { should_not receive_notifications_for(:issue_added, model) }

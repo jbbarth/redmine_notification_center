@@ -1,6 +1,6 @@
 require 'active_support/all'
 require 'redmine_notification_center/user_patch'
-require 'redmine_notification_center/notification_author_finder'
+require 'redmine_notification_center/notification_context_finder'
 require 'redmine_notification_center/notification_event'
 require 'redmine_notification_center/notification_policy'
 require 'redmine_notification_center/utils'

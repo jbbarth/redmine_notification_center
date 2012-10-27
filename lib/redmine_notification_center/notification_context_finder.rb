@@ -1,5 +1,5 @@
 module RedmineNotificationCenter
-  class NotificationAuthorFinder
+  class NotificationContextFinder
     def initialize(object)
       @object = object
     end
