@@ -10,35 +10,71 @@ class NotificationContextFinderTest < ActiveSupport::TestCase
 
   NCF = RedmineNotificationCenter::NotificationContextFinder
 
-  should 'find author for an issue' do
-    assert NCF.new(Issue.first).author.is_a?(User)
+  context '#author' do
+    should 'find author for an issue' do
+      assert NCF.new(Issue.first).author.is_a?(User)
+    end
+
+    should 'find author for an issue journal (note)' do
+      assert NCF.new(Journal.first).author.is_a?(User)
+    end
+
+    should 'find author for a file (attachment)' do
+      assert NCF.new(Attachment.first).author.is_a?(User)
+    end
+
+    should 'find author for a document' do
+      assert NCF.new(Document.first).author.is_a?(User)
+    end
+
+    should 'find author for an wiki page' do
+      assert NCF.new(WikiContent.first).author.is_a?(User)
+    end
+
+    should 'find author for an forum message' do
+      assert NCF.new(Message.first).author.is_a?(User)
+    end
+
+    should 'find author for an news' do
+      assert NCF.new(News.first).author.is_a?(User)
+    end
+
+    should 'find author for an news comment' do
+      assert NCF.new(Comment.first).author.is_a?(User)
+    end
   end
 
-  should 'find author for an issue journal (note)' do
-    assert NCF.new(Journal.first).author.is_a?(User)
-  end
+  context '#project_id' do
+    should 'find project_id for an issue' do
+      assert NCF.new(Issue.first).project_id.is_a?(Integer)
+    end
 
-  should 'find author for a file (attachment)' do
-    assert NCF.new(Attachment.first).author.is_a?(User)
-  end
+    should 'find project_id for an issue journal (note)' do
+      assert NCF.new(Journal.first).project_id.is_a?(Integer)
+    end
 
-  should 'find author for a document' do
-    assert NCF.new(Document.first).author.is_a?(User)
-  end
+    should 'find project_id for a file (attachment)' do
+      assert NCF.new(Attachment.first).project_id.is_a?(Integer)
+    end
 
-  should 'find author for an wiki page' do
-    assert NCF.new(WikiContent.first).author.is_a?(User)
-  end
+    should 'find project_id for a document' do
+      assert NCF.new(Document.first).project_id.is_a?(Integer)
+    end
 
-  should 'find author for an forum message' do
-    assert NCF.new(Message.first).author.is_a?(User)
-  end
+    should 'find project_id for an wiki page' do
+      assert NCF.new(WikiContent.first).project_id.is_a?(Integer)
+    end
 
-  should 'find author for an news' do
-    assert NCF.new(News.first).author.is_a?(User)
-  end
+    should 'find project_id for an forum message' do
+      assert NCF.new(Message.first).project_id.is_a?(Integer)
+    end
 
-  should 'find author for an news comment' do
-    assert NCF.new(Comment.first).author.is_a?(User)
+    should 'find project_id for an news' do
+      assert NCF.new(News.first).project_id.is_a?(Integer)
+    end
+
+    should 'find project_id for an news comment' do
+      assert NCF.new(Comment.first).project_id.is_a?(Integer)
+    end
   end
 end

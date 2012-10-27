@@ -13,7 +13,18 @@ module RedmineNotificationCenter
       when Document
         @object.attachments.first.try(:author)
       else
-        raise ArgumentError, "Object type not supported: #{@object.inspect}"
+        raise ArgumentError, "Object type not supported in '#author': #{@object.inspect}"
+      end
+    end
+
+    def project_id
+      case @object
+      when Issue, Message, WikiContent, News, Attachment, Journal, Document
+        @object.project.id
+      when Comment
+        @object.commented.project.id
+      else
+        raise ArgumentError, "Object type not supported in '#project_id': #{@object.inspect}"
       end
     end
   end
