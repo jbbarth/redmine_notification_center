@@ -31,5 +31,16 @@ module RedmineNotificationCenter
     def project_id
       project.id
     end
+
+    def tracker_id
+      case @object
+      when Issue
+        @object.tracker_id
+      when Journal
+        @object.issue.tracker_id
+      else
+        raise ArgumentError, "Object type not supported in '#tracker_id': #{@object.inspect}"
+      end
+    end
   end
 end

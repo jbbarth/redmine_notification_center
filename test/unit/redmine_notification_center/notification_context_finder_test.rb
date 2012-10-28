@@ -77,4 +77,20 @@ class NotificationContextFinderTest < ActiveSupport::TestCase
       assert NCF.new(Comment.first).project_id.is_a?(Integer)
     end
   end
+
+  context '#tracker_id' do
+    should 'find tracker_id for an issue' do
+      assert NCF.new(Issue.first).tracker_id.is_a?(Integer)
+    end
+
+    should 'find tracker_id for an issue journal (note)' do
+      assert NCF.new(Journal.first).tracker_id.is_a?(Integer)
+    end
+
+    should 'raise error for other types' do
+      assert_raise(ArgumentError) do
+        NCF.new(Message.first).tracker_id
+      end
+    end
+  end
 end

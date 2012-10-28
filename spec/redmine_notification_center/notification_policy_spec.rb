@@ -209,11 +209,18 @@ describe RedmineNotificationCenter::NotificationPolicy do
       it { should receive_notifications_for(:document_added, model) }
       it { should receive_notifications_for(:issue_added, model) }
       it { should_not receive_notifications_for(:issue_edited, model) }
-      it { should receive_notifications_for(:message_posted, model) }
-      it { should receive_notifications_for(:news_added, model) }
-      it { should receive_notifications_for(:news_comment_added, model) }
-      it { should receive_notifications_for(:wiki_content_added, model) }
-      it { should receive_notifications_for(:wiki_content_updated, model) }
+    end
+
+    context "user don't want notifications for some trackers" do
+      subject do
+        FakeUser.new('all').tap do |user|
+          user.notification_preferences=({:exceptions => {:for_issue_trackers => [1]} })
+        end
+      end
+      before { RedmineNotificationCenter::NotificationContextFinder.any_instance.stub(:tracker_id) { 1 } }
+
+      it { should_not receive_notifications_for(:issue_added, model) }
+      it { should_not receive_notifications_for(:issue_edited, model) }
     end
   end
 end
