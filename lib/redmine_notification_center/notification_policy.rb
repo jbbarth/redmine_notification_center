@@ -80,13 +80,13 @@ module RedmineNotificationCenter
       end
       if pref[:exceptions][:for_issue_trackers].present?
         context = NotificationContextFinder.new(notification_event.object)
-        #TODO: handle tracker_id_was
-        return true if pref[:exceptions][:for_issue_trackers].include?(context.tracker_id)
+        excluded = pref[:exceptions][:for_issue_trackers]
+        return true if excluded.include?(context.tracker_id) && excluded.include?(context.tracker_id_was)
       end
       if pref[:exceptions][:for_issue_priorities].present?
         context = NotificationContextFinder.new(notification_event.object)
-        #TODO: handle priority_id_was
-        return true if pref[:exceptions][:for_issue_priorities].include?(context.priority_id)
+        excluded = pref[:exceptions][:for_issue_priorities]
+        return true if excluded.include?(context.priority_id) && excluded.include?(context.priority_id_was)
       end
       false
     end

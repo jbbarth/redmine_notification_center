@@ -218,7 +218,7 @@ describe RedmineNotificationCenter::NotificationPolicy do
           user.notification_preferences=({:exceptions => {:for_issue_trackers => [1]} })
         end
       end
-      before { NCF.any_instance.stub(:tracker_id) { 1 } }
+      before { NCF.any_instance.stub(:issue) { FakeIssue.new } }
 
       it { should_not receive_notifications_for(:issue_added, model) }
       it { should_not receive_notifications_for(:issue_edited, model) }
@@ -230,7 +230,7 @@ describe RedmineNotificationCenter::NotificationPolicy do
           user.notification_preferences=({:exceptions => {:for_issue_priorities => [1]} })
         end
       end
-      before { NCF.any_instance.stub(:priority_id) { 1 } }
+      before { NCF.any_instance.stub(:issue) { FakeIssue.new } }
 
       it { should_not receive_notifications_for(:issue_added, model) }
       it { should_not receive_notifications_for(:issue_edited, model) }
@@ -239,13 +239,12 @@ describe RedmineNotificationCenter::NotificationPolicy do
     context "user don't want notifications for some issue priorities and trackers" do
       subject do
         FakeUser.new('all').tap do |user|
-          user.notification_preferences=({:exceptions => {:for_issue_priorities => [1], :for_issue_trackers => [1]} })
+          user.notification_preferences=({:exceptions => {:for_issue_trackers => [2], :for_issue_priorities => [1]} })
         end
       end
 
       it "doesn't block the other exception if first doesn't validate" do
-        NCF.any_instance.stub(:tracker_id) { 2 }
-        NCF.any_instance.stub(:priority_id) { 1 }
+        NCF.any_instance.stub(:issue) { FakeIssue.new }
         subject.should_not receive_notifications_for(:issue_added, model)
       end
     end

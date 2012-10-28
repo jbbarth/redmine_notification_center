@@ -32,26 +32,16 @@ module RedmineNotificationCenter
       project.id
     end
 
-    def tracker_id
+    def issue
       case @object
       when Issue
-        @object.tracker_id
+        @object
       when Journal
-        @object.issue.tracker_id
+        @object.issue
       else
-        raise ArgumentError, "Object type not supported in '#tracker_id': #{@object.inspect}"
+        raise ArgumentError, "Object type not supported in '#issue': #{@object.inspect}"
       end
     end
-
-    def priority_id
-      case @object
-      when Issue
-        @object.priority_id
-      when Journal
-        @object.issue.priority_id
-      else
-        raise ArgumentError, "Object type not supported in '#priority_id': #{@object.inspect}"
-      end
-    end
+    delegate :tracker_id, :tracker_id_was, :priority_id, :priority_id_was, :to => :issue
   end
 end

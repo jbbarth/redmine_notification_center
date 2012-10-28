@@ -18,4 +18,8 @@ class FakeIssue
   def author; nil; end
   def assigned_to; nil; end
   alias :assigned_to_was :assigned_to
+  def priority_id; 1; end
+  alias :priority_id_was :priority_id
+  def tracker_id; 1; end
+  alias :tracker_id_was :tracker_id
 end
