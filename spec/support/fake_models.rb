@@ -22,4 +22,5 @@ class FakeIssue
   alias :priority_id_was :priority_id
   def tracker_id; 1; end
   alias :tracker_id_was :tracker_id
+  def watchers; []; end
 end

@@ -12,7 +12,8 @@ describe RedmineNotificationCenter::NotificationPolicy do
     let(:model) { double('model') }
     let(:issue_where_author)   { i = FakeIssue.new; i.stub('author') { subject }; i }
     let(:issue_where_assigned) { i = FakeIssue.new; i.stub('assigned_to') { subject }; i }
-    let(:issue_any)          { FakeIssue.new }
+    let(:issue_watched)        { i = FakeIssue.new; i.stub('watchers') { [subject] }; i }
+    let(:issue_any)            { FakeIssue.new }
 
     context "user with NO notification at all" do
       subject { FakeUser.new('none') }
@@ -152,8 +153,8 @@ describe RedmineNotificationCenter::NotificationPolicy do
       before { NCF.any_instance.stub(:author) { subject } }
       it { should_not receive_notifications_for(:attachments_added, model) }
       it { should_not receive_notifications_for(:document_added, model) }
-      it { should_not receive_notifications_for(:issue_added, model) }
-      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should_not receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should_not receive_notifications_for(:message_posted, model) }
       it { should_not receive_notifications_for(:news_added, model) }
       it { should_not receive_notifications_for(:news_comment_added, model) }
@@ -171,8 +172,8 @@ describe RedmineNotificationCenter::NotificationPolicy do
       before { NCF.any_instance.stub(:project_id) { 1 } }
       it { should_not receive_notifications_for(:attachments_added, model) }
       it { should_not receive_notifications_for(:document_added, model) }
-      it { should_not receive_notifications_for(:issue_added, model) }
-      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should_not receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should_not receive_notifications_for(:message_posted, model) }
       it { should_not receive_notifications_for(:news_added, model) }
       it { should_not receive_notifications_for(:news_comment_added, model) }
@@ -187,11 +188,11 @@ describe RedmineNotificationCenter::NotificationPolicy do
         end
       end
 
-      before { RedmineNotificationCenter::NotificationPolicy.any_instance.stub(:matches_a_role_exception) { true } }
+      before { Policy.any_instance.stub(:matches_a_role_exception) { true } }
       it { should_not receive_notifications_for(:attachments_added, model) }
       it { should_not receive_notifications_for(:document_added, model) }
-      it { should_not receive_notifications_for(:issue_added, model) }
-      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should_not receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
       it { should_not receive_notifications_for(:message_posted, model) }
       it { should_not receive_notifications_for(:news_added, model) }
       it { should_not receive_notifications_for(:news_comment_added, model) }
@@ -208,8 +209,8 @@ describe RedmineNotificationCenter::NotificationPolicy do
 
       it { should receive_notifications_for(:attachments_added, model) }
       it { should receive_notifications_for(:document_added, model) }
-      it { should receive_notifications_for(:issue_added, model) }
-      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
     end
 
     context "user don't want notifications for some trackers" do
@@ -220,8 +221,8 @@ describe RedmineNotificationCenter::NotificationPolicy do
       end
       before { NCF.any_instance.stub(:issue) { FakeIssue.new } }
 
-      it { should_not receive_notifications_for(:issue_added, model) }
-      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should_not receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
     end
 
     context "user don't want notifications for some issue priorities" do
@@ -232,8 +233,8 @@ describe RedmineNotificationCenter::NotificationPolicy do
       end
       before { NCF.any_instance.stub(:issue) { FakeIssue.new } }
 
-      it { should_not receive_notifications_for(:issue_added, model) }
-      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should_not receive_notifications_for(:issue_added, issue_any) }
+      it { should_not receive_notifications_for(:issue_edited, issue_any) }
     end
 
     context "user don't want notifications for some issue priorities and trackers" do
@@ -245,7 +246,46 @@ describe RedmineNotificationCenter::NotificationPolicy do
 
       it "doesn't block the other exception if first doesn't validate" do
         NCF.any_instance.stub(:issue) { FakeIssue.new }
-        subject.should_not receive_notifications_for(:issue_added, model)
+        subject.should_not receive_notifications_for(:issue_added, issue_any)
+      end
+    end
+
+    context "when user is watcher of an issue" do
+      subject { FakeUser.new('all') }
+
+      it "blocks notification if user don't want any notification at all" do
+        subject.mail_notification = 'none'
+        subject.should_not receive_notifications_for(:issue_edited, issue_watched)
+      end
+
+      it "blocks notification if user don't want any issue notification" do
+        subject.notification_preferences = { :all_events => '0', :by_module => { :issue_tracking => 'none' } }
+        subject.should_not receive_notifications_for(:issue_edited, issue_watched)
+      end
+
+      it "blocks notification if user blocks his own notification and he's author of this event" do
+        NCF.any_instance.stub(:author) { subject }
+        subject.notification_preferences = { :all_events => '0', :by_module => { :issue_tracking => 'custom' },
+                                             :exceptions => { :no_self_notified => '1' } }
+        subject.should_not receive_notifications_for(:issue_edited, issue_watched)
+      end
+
+      it "sends notification if user allows some notifications" do
+        subject.notification_preferences = { :all_events => '0', :by_module => { :issue_tracking => 'custom',
+                                             :issue_tracking_custom => { :if_author => "0", :if_assignee => "0", :others => "0" } } }
+        subject.should receive_notifications_for(:issue_edited, issue_watched)
+      end
+
+      it "sends notification even if user has an exception on that case" do
+        #for the sake of simplicity, we put all possible exceptions and see if notification is sent
+        NCF.any_instance.stub(:issue) { FakeIssue.new } #tracker_id=1, priority_id=1
+        NCF.any_instance.stub(:project_id) { 1 }
+        Policy.any_instance.stub(:matches_a_role_exception) { true }
+        subject.notification_preferences = { :exceptions => { :for_projects => [1],
+                                                              :no_issue_updates => "1",
+                                                              :for_issue_trackers => [1],
+                                                              :for_issue_priorities => [1] } }
+        subject.should receive_notifications_for(:issue_edited, issue_watched)
       end
     end
   end

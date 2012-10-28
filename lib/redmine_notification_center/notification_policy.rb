@@ -9,11 +9,13 @@ module RedmineNotificationCenter
       module_name = Utils.module_from_event(event_type)
       if user_doesnt_want_any_notification
         false
-      elsif matches_a_global_exception(notification_event)
+      elsif author_and_no_self_notified?(notification_event)
         false
-      elsif matches_a_role_exception(notification_event)
+      elsif exceptions_apply?(module_name, notification_event) && matches_a_global_exception(notification_event)
         false
-      elsif module_name == :issue_tracking && matches_an_issue_exception(notification_event)
+      elsif exceptions_apply?(module_name, notification_event) && matches_a_role_exception(notification_event)
+        false
+      elsif exceptions_apply?(module_name, notification_event) && module_name == :issue_tracking && matches_an_issue_exception(notification_event)
         false
       elsif user_wants_all_notifications
         true
@@ -51,11 +53,23 @@ module RedmineNotificationCenter
       pref[:all_events] == '1'
     end
 
+    def exceptions_apply?(module_name, notification_event)
+      if module_name == :issue_tracking
+        return false if watches?(notification_event.object)
+        #return false if NotificationContextFinder.new(notification_event.object).author == @user
+        #return false if assigned_to_me?(notification_event.object)
+      end
+      true
+    end
+
+    def author_and_no_self_notified?(notification_event)
+      context = NotificationContextFinder.new(notification_event.object)
+      pref[:exceptions][:no_self_notified] == '1' && context.author == @user
+    end
+
     def matches_a_global_exception(notification_event)
       context = NotificationContextFinder.new(notification_event.object)
-      if pref[:exceptions][:no_self_notified] == '1' && context.author == @user
-        true
-      elsif pref[:exceptions][:for_projects].present? && pref[:exceptions][:for_projects].include?(context.project_id)
+      if pref[:exceptions][:for_projects].present? && pref[:exceptions][:for_projects].include?(context.project_id)
         true
       else
         false
@@ -109,17 +123,26 @@ module RedmineNotificationCenter
     # ISSUES
     #
     def issue_tracking_notification_for(event_type, object)
-      if pref[:by_module][:issue_tracking] == 'custom'
-        #TODO: handle watcher case
+      if pref[:by_module][:issue_tracking] == 'custom' && !watches?(object)
         if object.author == @user
           return pref[:by_module][:issue_tracking_custom][:if_author] == '1'
         end
-        if @user.is_or_belongs_to?(object.assigned_to) || @user.is_or_belongs_to?(object.assigned_to_was)
+        if assigned_to_me?(object)
           return pref[:by_module][:issue_tracking_custom][:if_assignee] == '1'
         end
         return pref[:by_module][:issue_tracking_custom][:others] == '1'
       end
-      pref[:by_module][:issue_tracking] == 'all'
+      #case: not custom or watches issue
+      #in this case, send notification for either 'all' or watches+'custom'
+      pref[:by_module][:issue_tracking] != 'none'
+    end
+
+    def watches?(object)
+      object.watchers.include?(@user)
+    end
+
+    def assigned_to_me?(object)
+      @user.is_or_belongs_to?(object.assigned_to) || @user.is_or_belongs_to?(object.assigned_to_was)
     end
 
     #
