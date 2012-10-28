@@ -93,4 +93,20 @@ class NotificationContextFinderTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context '#priority_id' do
+    should 'find priority_id for an issue' do
+      assert NCF.new(Issue.first).priority_id.is_a?(Integer)
+    end
+
+    should 'find priority_id for an issue journal (note)' do
+      assert NCF.new(Journal.first).priority_id.is_a?(Integer)
+    end
+
+    should 'raise error for other types' do
+      assert_raise(ArgumentError) do
+        NCF.new(Message.first).priority_id
+      end
+    end
+  end
 end

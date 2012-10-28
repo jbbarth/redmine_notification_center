@@ -42,5 +42,16 @@ module RedmineNotificationCenter
         raise ArgumentError, "Object type not supported in '#tracker_id': #{@object.inspect}"
       end
     end
+
+    def priority_id
+      case @object
+      when Issue
+        @object.priority_id
+      when Journal
+        @object.issue.priority_id
+      else
+        raise ArgumentError, "Object type not supported in '#priority_id': #{@object.inspect}"
+      end
+    end
   end
 end

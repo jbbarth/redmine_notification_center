@@ -222,5 +222,17 @@ describe RedmineNotificationCenter::NotificationPolicy do
       it { should_not receive_notifications_for(:issue_added, model) }
       it { should_not receive_notifications_for(:issue_edited, model) }
     end
+
+    context "user don't want notifications for some issue priorities" do
+      subject do
+        FakeUser.new('all').tap do |user|
+          user.notification_preferences=({:exceptions => {:for_issue_priorities => [1]} })
+        end
+      end
+      before { RedmineNotificationCenter::NotificationContextFinder.any_instance.stub(:priority_id) { 1 } }
+
+      it { should_not receive_notifications_for(:issue_added, model) }
+      it { should_not receive_notifications_for(:issue_edited, model) }
+    end
   end
 end
