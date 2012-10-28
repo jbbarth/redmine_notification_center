@@ -75,13 +75,15 @@ module RedmineNotificationCenter
 
     #TODO: exceptions! + don't use issue exceptions if issue author, issue assignee or watcher
     def matches_an_issue_exception(notification_event)
-      if pref[:exceptions][:no_issue_updates] == '1' && notification_event.type == :issue_edited
-        return true
-      elsif pref[:exceptions][:for_issue_trackers].present?
+      if pref[:exceptions][:no_issue_updates] == '1'
+        return true if notification_event.type == :issue_edited
+      end
+      if pref[:exceptions][:for_issue_trackers].present?
         context = NotificationContextFinder.new(notification_event.object)
         #TODO: handle tracker_id_was
         return true if pref[:exceptions][:for_issue_trackers].include?(context.tracker_id)
-      elsif pref[:exceptions][:for_issue_priorities].present?
+      end
+      if pref[:exceptions][:for_issue_priorities].present?
         context = NotificationContextFinder.new(notification_event.object)
         #TODO: handle priority_id_was
         return true if pref[:exceptions][:for_issue_priorities].include?(context.priority_id)
