@@ -197,5 +197,23 @@ describe RedmineNotificationCenter::NotificationPolicy do
       it { should_not receive_notifications_for(:wiki_content_added, model) }
       it { should_not receive_notifications_for(:wiki_content_updated, model) }
     end
+
+    context "user don't want notifications for issue updates" do
+      subject do
+        FakeUser.new('all').tap do |user|
+          user.notification_preferences=({:exceptions => {:no_issue_updates => '1'} })
+        end
+      end
+
+      it { should receive_notifications_for(:attachments_added, model) }
+      it { should receive_notifications_for(:document_added, model) }
+      it { should receive_notifications_for(:issue_added, model) }
+      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should receive_notifications_for(:message_posted, model) }
+      it { should receive_notifications_for(:news_added, model) }
+      it { should receive_notifications_for(:news_comment_added, model) }
+      it { should receive_notifications_for(:wiki_content_added, model) }
+      it { should receive_notifications_for(:wiki_content_updated, model) }
+    end
   end
 end
