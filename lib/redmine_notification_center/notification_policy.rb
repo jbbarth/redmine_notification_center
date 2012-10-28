@@ -11,6 +11,8 @@ module RedmineNotificationCenter
         false
       elsif matches_a_global_exception(notification_event)
         false
+      elsif matches_a_role_exception(notification_event)
+        false
       elsif module_name == :issue_tracking && matches_an_issue_exception(notification_event)
         false
       elsif user_wants_all_notifications
@@ -36,11 +38,11 @@ module RedmineNotificationCenter
       end
     end
 
+    private
     def pref
       @pref ||= @user.notification_preferences
     end
 
-    private
     def user_doesnt_want_any_notification
       pref[:none_at_all] == '1'
     end
@@ -58,6 +60,17 @@ module RedmineNotificationCenter
       else
         false
       end
+    end
+
+    def matches_a_role_exception(notification_event)
+      context = NotificationContextFinder.new(notification_event.object)
+      if pref[:exceptions][:for_roles].present?
+        my_roles = @user.roles_for_project(context.project).map(&:id)
+        excluded_roles = pref[:exceptions][:for_roles]
+        not_excluded_roles = my_roles - excluded_roles
+        return true if not_excluded_roles.blank?
+      end
+      return false
     end
 
     #TODO: exceptions! + don't use issue exceptions if issue author, issue assignee or watcher

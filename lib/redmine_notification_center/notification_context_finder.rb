@@ -17,15 +17,19 @@ module RedmineNotificationCenter
       end
     end
 
-    def project_id
+    def project
       case @object
       when Issue, Message, WikiContent, News, Attachment, Journal, Document
-        @object.project.id
+        @object.project
       when Comment
-        @object.commented.project.id
+        @object.commented.project
       else
         raise ArgumentError, "Object type not supported in '#project_id': #{@object.inspect}"
       end
+    end
+
+    def project_id
+      project.id
     end
   end
 end

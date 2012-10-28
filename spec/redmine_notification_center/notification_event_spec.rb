@@ -189,5 +189,24 @@ describe RedmineNotificationCenter::NotificationEvent do
       it { should_not receive_notifications_for(:wiki_content_added, model) }
       it { should_not receive_notifications_for(:wiki_content_updated, model) }
     end
+
+    context "user don't want notifications for some roles" do
+      subject do
+        FakeUser.new('all').tap do |user|
+          user.notification_preferences=({:exceptions => {:for_roles => [1]} })
+        end
+      end
+
+      before { RedmineNotificationCenter::NotificationPolicy.any_instance.stub(:matches_a_role_exception) { true } }
+      it { should_not receive_notifications_for(:attachments_added, model) }
+      it { should_not receive_notifications_for(:document_added, model) }
+      it { should_not receive_notifications_for(:issue_added, model) }
+      it { should_not receive_notifications_for(:issue_edited, model) }
+      it { should_not receive_notifications_for(:message_posted, model) }
+      it { should_not receive_notifications_for(:news_added, model) }
+      it { should_not receive_notifications_for(:news_comment_added, model) }
+      it { should_not receive_notifications_for(:wiki_content_added, model) }
+      it { should_not receive_notifications_for(:wiki_content_updated, model) }
+    end
   end
 end
