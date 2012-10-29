@@ -22,11 +22,6 @@ module RedmineNotificationCenter
       DEFAULT_NOTIFICATION_OPTIONS.deep_merge(pref[:notification_preferences] || translate_from_old_mail_notification)
     end
 
-    #TODO: needs refactoring
-    def wants_notifications_for(notification_event)
-      NotificationPolicy.new(self).should_be_notified_for?(notification_event)
-    end
-
     private
     def translate_from_old_mail_notification
       #we use Hash#deep_dup here so that internal hashes are not changed

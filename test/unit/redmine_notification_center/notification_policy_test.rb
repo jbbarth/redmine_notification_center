@@ -11,29 +11,29 @@ class NotificationPolicyTest < ActiveSupport::TestCase
       # issue(10) belongs to project(5), where user(8) has role(1)+role(2)
       @user = User.find(8)
       @user.update_attribute(:mail_notification, 'all')
-      @policy = RedmineNotificationCenter::NotificationPolicy.new(@user)
       @event = RedmineNotificationCenter::NotificationEvent.new(:issue_added, Issue.find(10))
+      @policy = RedmineNotificationCenter::NotificationPolicy.new(@event)
     end
 
     should 'be falsy if no role exception' do
       @user.pref[:notification_preferences] = {:exceptions => {:for_roles => []} }
       @user.pref.save
-      assert !@policy.send(:matches_a_role_exception, @event)
-      assert @policy.should_be_notified_for?(@event)
+      assert !@policy.send(:matches_a_role_exception, @user)
+      assert @policy.should_notify?(@user)
     end
 
     should 'be truthy if all roles for this projects are in exception' do
       @user.pref[:notification_preferences] = {:exceptions => {:for_roles => [1,2]} }
       @user.pref.save
-      assert @policy.send(:matches_a_role_exception, @event)
-      assert !@policy.should_be_notified_for?(@event)
+      assert @policy.send(:matches_a_role_exception, @user)
+      assert !@policy.should_notify?(@user)
     end
 
     should 'be falsy if at least one role is not in exception' do
       @user.pref[:notification_preferences] = {:exceptions => {:for_roles => [2,3]} }
       @user.pref.save
-      assert !@policy.send(:matches_a_role_exception, @event)
-      assert @policy.should_be_notified_for?(@event)
+      assert !@policy.send(:matches_a_role_exception, @user)
+      assert @policy.should_notify?(@user)
     end
   end
 end

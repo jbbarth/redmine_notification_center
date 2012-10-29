@@ -12,7 +12,7 @@ module RedmineNotificationCenter
 
     def recipients
       candidates.select do |candidate|
-        candidate.wants_notifications_for(self)
+        NotificationPolicy.new(self).should_notify?(candidate)
       end
     end
   end

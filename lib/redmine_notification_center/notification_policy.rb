@@ -1,39 +1,39 @@
 module RedmineNotificationCenter
   class NotificationPolicy
-    def initialize(user)
-      @user = user
+    attr_reader :event
+
+    def initialize(notification_event)
+      @event = notification_event
     end
 
-    def should_be_notified_for?(notification_event)
-      event_type, object = notification_event.type, notification_event.object
-      module_name = Utils.module_from_event(event_type)
-      if user_doesnt_want_any_notification
+    def should_notify?(user)
+      if doesnt_want_any_notification(user)
         false
-      elsif author_and_no_self_notified?(notification_event)
+      elsif author_and_no_self_notified?(user)
         false
-      elsif exceptions_apply?(module_name, notification_event) && matches_a_global_exception(notification_event)
+      elsif exceptions_apply?(user) && matches_a_global_exception(user)
         false
-      elsif exceptions_apply?(module_name, notification_event) && matches_a_role_exception(notification_event)
+      elsif exceptions_apply?(user) && matches_a_role_exception(user)
         false
-      elsif exceptions_apply?(module_name, notification_event) && module_name == :issue_tracking && matches_an_issue_exception(notification_event)
+      elsif exceptions_apply?(user) && module_name == :issue_tracking && matches_an_issue_exception(user)
         false
-      elsif user_wants_all_notifications
+      elsif wants_all_notifications(user)
         true
       else
         # delegate to module specific methods
         case module_name
         when :files
-          files_notification_for(event_type, object)
+          files_notification_for(user)
         when :documents
-          documents_notification_for(event_type, object)
+          documents_notification_for(user)
         when :issue_tracking
-          issue_tracking_notification_for(event_type, object)
+          issue_tracking_notification_for(user)
         when :boards
-          boards_notification_for(event_type, object)
+          boards_notification_for(user)
         when :news
-          news_notification_for(event_type, object)
+          news_notification_for(user)
         when :wiki
-          wiki_notification_for(event_type, object)
+          wiki_notification_for(user)
         else
           raise "You should never reach this line. The code might be missing an event type above ?"
         end
@@ -41,64 +41,65 @@ module RedmineNotificationCenter
     end
 
     private
-    def pref
-      @pref ||= @user.notification_preferences
+    def context
+      @context ||= NotificationContextFinder.new(event.object)
     end
 
-    def user_doesnt_want_any_notification
-      pref[:none_at_all] == '1'
+    def module_name
+      @module_name ||= Utils.module_from_event(event.type)
     end
 
-    def user_wants_all_notifications
-      pref[:all_events] == '1'
+    def doesnt_want_any_notification(user)
+      user.notification_preferences[:none_at_all] == '1'
     end
 
-    def exceptions_apply?(module_name, notification_event)
+    def wants_all_notifications(user)
+      user.notification_preferences[:all_events] == '1'
+    end
+
+    def exceptions_apply?(user)
       if module_name == :issue_tracking
-        return false if watches?(notification_event.object)
-        return false if issue_author_of?(notification_event.object)
-        return false if assigned_to?(notification_event.object)
+        return false if watched_by?(user)
+        return false if issue_author_is?(user)
+        return false if assigned_to?(user)
       end
       true
     end
 
-    def author_and_no_self_notified?(notification_event)
-      pref[:exceptions][:no_self_notified] == '1' && author_of?(notification_event.object)
+    def author_and_no_self_notified?(user)
+      user.notification_preferences[:exceptions][:no_self_notified] == '1' && author_is?(user)
     end
 
-    def matches_a_global_exception(notification_event)
-      context = NotificationContextFinder.new(notification_event.object)
-      if pref[:exceptions][:for_projects].present? && pref[:exceptions][:for_projects].include?(context.project_id)
+    def matches_a_global_exception(user)
+      project_exceptions = user.notification_preferences[:exceptions][:for_projects]
+      if project_exceptions.present? && project_exceptions.include?(context.project_id)
         true
       else
         false
       end
     end
 
-    def matches_a_role_exception(notification_event)
-      context = NotificationContextFinder.new(notification_event.object)
-      if pref[:exceptions][:for_roles].present?
-        my_roles = @user.roles_for_project(context.project).map(&:id)
-        excluded_roles = pref[:exceptions][:for_roles]
-        not_excluded_roles = my_roles - excluded_roles
+    def matches_a_role_exception(user)
+      role_exceptions = user.notification_preferences[:exceptions][:for_roles]
+      if role_exceptions.present?
+        my_roles = user.roles_for_project(context.project).map(&:id)
+        not_excluded_roles = my_roles - role_exceptions
         return true if not_excluded_roles.blank?
       end
       return false
     end
 
     #TODO: exceptions! + don't use issue exceptions if issue author, issue assignee or watcher
-    def matches_an_issue_exception(notification_event)
-      if pref[:exceptions][:no_issue_updates] == '1'
-        return true if notification_event.type == :issue_edited
+    def matches_an_issue_exception(user)
+      if user.notification_preferences[:exceptions][:no_issue_updates] == '1'
+        return true if event.type == :issue_edited
       end
-      if pref[:exceptions][:for_issue_trackers].present?
-        context = NotificationContextFinder.new(notification_event.object)
-        excluded = pref[:exceptions][:for_issue_trackers]
+      if user.notification_preferences[:exceptions][:for_issue_trackers].present?
+        excluded = user.notification_preferences[:exceptions][:for_issue_trackers]
         return true if excluded.include?(context.tracker_id) && excluded.include?(context.tracker_id_was)
       end
-      if pref[:exceptions][:for_issue_priorities].present?
-        context = NotificationContextFinder.new(notification_event.object)
-        excluded = pref[:exceptions][:for_issue_priorities]
+      if user.notification_preferences[:exceptions][:for_issue_priorities].present?
+        excluded = user.notification_preferences[:exceptions][:for_issue_priorities]
         return true if excluded.include?(context.priority_id) && excluded.include?(context.priority_id_was)
       end
       false
@@ -107,74 +108,74 @@ module RedmineNotificationCenter
     # 
     # FILES
     #
-    def files_notification_for(event_type, object)
-      pref[:by_module][:files] == 'all'
+    def files_notification_for(user)
+      user.notification_preferences[:by_module][:files] == 'all'
     end
 
     #
     # DOCUMENTS
     #
-    def documents_notification_for(event_type, object)
-      pref[:by_module][:documents] == 'all'
+    def documents_notification_for(user)
+      user.notification_preferences[:by_module][:documents] == 'all'
     end
 
     #
     # ISSUES
     #
-    def issue_tracking_notification_for(event_type, object)
-      if pref[:by_module][:issue_tracking] == 'custom' && !watches?(object)
-        if issue_author_of?(object)
-          return pref[:by_module][:issue_tracking_custom][:if_author] == '1'
+    def issue_tracking_notification_for(user)
+      if user.notification_preferences[:by_module][:issue_tracking] == 'custom' && !watched_by?(user)
+        if issue_author_is?(user)
+          return user.notification_preferences[:by_module][:issue_tracking_custom][:if_author] == '1'
         end
-        if assigned_to?(object)
-          return pref[:by_module][:issue_tracking_custom][:if_assignee] == '1'
+        if assigned_to?(user)
+          return user.notification_preferences[:by_module][:issue_tracking_custom][:if_assignee] == '1'
         end
-        return pref[:by_module][:issue_tracking_custom][:others] == '1'
+        return user.notification_preferences[:by_module][:issue_tracking_custom][:others] == '1'
       end
       #case: not custom or watches issue
       #in this case, send notification for either 'all' or watches+'custom'
-      pref[:by_module][:issue_tracking] != 'none'
+      user.notification_preferences[:by_module][:issue_tracking] != 'none'
     end
 
-    def watches?(object)
-      issue(object).watchers.include?(@user)
+    def watched_by?(user)
+      issue.watchers.include?(user)
     end
 
-    def assigned_to?(object)
-      @user.is_or_belongs_to?(issue(object).assigned_to) || @user.is_or_belongs_to?(issue(object).assigned_to_was)
+    def assigned_to?(user)
+      user.is_or_belongs_to?(issue.assigned_to) || user.is_or_belongs_to?(issue.assigned_to_was)
     end
 
-    def author_of?(object)
-      NotificationContextFinder.new(object).author == @user
+    def author_is?(user)
+      context.author == user
     end
 
-    def issue_author_of?(object)
-      issue(object).author == @user
+    def issue_author_is?(user)
+      issue.author == user
     end
 
-    def issue(object)
-      NotificationContextFinder.new(object).issue
+    def issue
+      context.issue
     end
 
     #
     # BOARDS
     #
-    def boards_notification_for(event_type, object)
-      pref[:by_module][:boards] == 'all'
+    def boards_notification_for(user)
+      user.notification_preferences[:by_module][:boards] == 'all'
     end
 
     #
     # NEWS
     # 
-    def news_notification_for(event_type, object)
-      pref[:by_module][:news] == 'all'
+    def news_notification_for(user)
+      user.notification_preferences[:by_module][:news] == 'all'
     end
 
     #
     # WIKI
     #
-    def wiki_notification_for(event_type, object)
-      pref[:by_module][:wiki] == 'all'
+    def wiki_notification_for(user)
+      user.notification_preferences[:by_module][:wiki] == 'all'
     end
   end
 end
