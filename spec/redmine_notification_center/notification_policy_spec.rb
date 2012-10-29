@@ -288,5 +288,20 @@ describe RedmineNotificationCenter::NotificationPolicy do
         subject.should receive_notifications_for(:issue_edited, issue_watched)
       end
     end
+
+    context "when user is the author or assigned on an issue" do
+      subject { FakeUser.new('all') }
+
+      it "doesn't take exceptions into account if user allows some notifications" do
+        NCF.any_instance.stub(:project_id) { 1 }
+        Policy.any_instance.stub(:matches_a_role_exception) { true }
+        subject.notification_preferences = { :exceptions => { :for_projects => [1],
+                                                              :no_issue_updates => "1",
+                                                              :for_issue_trackers => [1],
+                                                              :for_issue_priorities => [1] } }
+        subject.should receive_notifications_for(:issue_edited, issue_where_author)
+        subject.should receive_notifications_for(:issue_edited, issue_where_assigned)
+      end
+    end
   end
 end

@@ -56,8 +56,8 @@ module RedmineNotificationCenter
     def exceptions_apply?(module_name, notification_event)
       if module_name == :issue_tracking
         return false if watches?(notification_event.object)
-        #return false if issue_author_of?(notification_event.object)
-        #return false if assigned_to?(notification_event.object)
+        return false if issue_author_of?(notification_event.object)
+        return false if assigned_to?(notification_event.object)
       end
       true
     end
