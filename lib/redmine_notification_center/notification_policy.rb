@@ -137,11 +137,11 @@ module RedmineNotificationCenter
     end
 
     def watches?(object)
-      object.watchers.include?(@user)
+      issue(object).watchers.include?(@user)
     end
 
     def assigned_to?(object)
-      @user.is_or_belongs_to?(object.assigned_to) || @user.is_or_belongs_to?(object.assigned_to_was)
+      @user.is_or_belongs_to?(issue(object).assigned_to) || @user.is_or_belongs_to?(issue(object).assigned_to_was)
     end
 
     def author_of?(object)
@@ -149,7 +149,11 @@ module RedmineNotificationCenter
     end
 
     def issue_author_of?(object)
-      NotificationContextFinder.new(object).issue.author == @user
+      issue(object).author == @user
+    end
+
+    def issue(object)
+      NotificationContextFinder.new(object).issue
     end
 
     #

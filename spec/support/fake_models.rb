@@ -24,3 +24,8 @@ class FakeIssue
   alias :tracker_id_was :tracker_id
   def watchers; []; end
 end
+
+class FakeJournal
+  def initialize(issue=nil); @issue = issue; end
+  def issue; @issue ||= FakeIssue.new; end
+end
