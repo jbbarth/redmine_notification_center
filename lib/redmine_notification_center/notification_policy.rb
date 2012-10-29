@@ -56,15 +56,14 @@ module RedmineNotificationCenter
     def exceptions_apply?(module_name, notification_event)
       if module_name == :issue_tracking
         return false if watches?(notification_event.object)
-        #return false if NotificationContextFinder.new(notification_event.object).author == @user
-        #return false if assigned_to_me?(notification_event.object)
+        #return false if issue_author_of?(notification_event.object)
+        #return false if assigned_to?(notification_event.object)
       end
       true
     end
 
     def author_and_no_self_notified?(notification_event)
-      context = NotificationContextFinder.new(notification_event.object)
-      pref[:exceptions][:no_self_notified] == '1' && context.author == @user
+      pref[:exceptions][:no_self_notified] == '1' && author_of?(notification_event.object)
     end
 
     def matches_a_global_exception(notification_event)
@@ -124,10 +123,10 @@ module RedmineNotificationCenter
     #
     def issue_tracking_notification_for(event_type, object)
       if pref[:by_module][:issue_tracking] == 'custom' && !watches?(object)
-        if object.author == @user
+        if issue_author_of?(object)
           return pref[:by_module][:issue_tracking_custom][:if_author] == '1'
         end
-        if assigned_to_me?(object)
+        if assigned_to?(object)
           return pref[:by_module][:issue_tracking_custom][:if_assignee] == '1'
         end
         return pref[:by_module][:issue_tracking_custom][:others] == '1'
@@ -141,8 +140,16 @@ module RedmineNotificationCenter
       object.watchers.include?(@user)
     end
 
-    def assigned_to_me?(object)
+    def assigned_to?(object)
       @user.is_or_belongs_to?(object.assigned_to) || @user.is_or_belongs_to?(object.assigned_to_was)
+    end
+
+    def author_of?(object)
+      NotificationContextFinder.new(object).author == @user
+    end
+
+    def issue_author_of?(object)
+      NotificationContextFinder.new(object).issue.author == @user
     end
 
     #
