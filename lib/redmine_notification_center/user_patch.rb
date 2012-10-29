@@ -22,6 +22,10 @@ module RedmineNotificationCenter
       DEFAULT_NOTIFICATION_OPTIONS.deep_merge(pref[:notification_preferences] || translate_from_old_mail_notification)
     end
 
+    def notification_address
+      pref[:notification_preferences][:other_notification_address].presence || mail
+    end
+
     private
     def translate_from_old_mail_notification
       #we use Hash#deep_dup here so that internal hashes are not changed

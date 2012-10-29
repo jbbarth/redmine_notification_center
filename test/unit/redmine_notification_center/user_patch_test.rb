@@ -69,4 +69,22 @@ class UserPatchTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context '#notification_preferences' do
+    setup do
+      @pref = User.find(1).pref
+      @pref[:notification_preferences] = {} #a lot of keys missing!
+      @pref.save
+    end
+
+    should 'use default email address if no specific address defined' do
+      assert_equal 'admin@somenet.foo', User.find(1).notification_address
+    end
+
+    should 'use specific address if defined' do
+      @pref[:notification_preferences] = { :other_notification_address => 'mail@example.net' }
+      @pref.save
+      assert_equal 'mail@example.net', User.find(1).notification_address
+    end
+  end
 end
