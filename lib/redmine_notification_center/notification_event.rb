@@ -10,7 +10,7 @@ module RedmineNotificationCenter
       raise "TODO"
     end
 
-    def recipients
+    def notified_users
       candidates.select do |candidate|
         NotificationPolicy.new(self).should_notify?(candidate)
       end

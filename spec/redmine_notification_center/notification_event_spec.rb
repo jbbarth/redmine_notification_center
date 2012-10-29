@@ -17,7 +17,7 @@ describe RedmineNotificationCenter::NotificationEvent do
     end
   end
 
-  describe '#recipients' do
+  describe '#notified_users' do
     #TODO
   end
 end
