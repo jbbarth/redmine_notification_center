@@ -33,14 +33,9 @@ module RedmineNotificationCenter
     end
 
     def issue
-      case @object
-      when Issue
-        @object
-      when Journal
-        @object.issue
-      else
-        raise ArgumentError, "Object type not supported in '#issue': #{@object.inspect}"
-      end
+      issue_candidate = @object.respond_to?(:issue) ? @object.issue : @object
+      raise ArgumentError, "Object type not supported in '#issue': #{@object.inspect}" unless issue_candidate.respond_to?(:tracker_id)
+      issue_candidate
     end
     delegate :tracker_id, :tracker_id_was, :priority_id, :priority_id_was, :to => :issue
   end
