@@ -9,7 +9,7 @@ module RedmineNotificationCenter
     def candidates
       recipients = []
       case type
-      when :issue_added, :issue_edit
+      when :issue_added, :issue_edited
         # adapted from app/models/issue.rb
         issue = object
         recipients << issue.author if issue.author

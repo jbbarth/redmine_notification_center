@@ -9,9 +9,10 @@ describe RedmineNotificationCenter::NotificationEvent do
     let!(:assignee) { stub(:active? => true) }
     let!(:project) { stub(:users => []) }
     let!(:issue) { stub(:project => project, :visible? => true).as_null_object }
-    let!(:event) { Event.new(:issue_added, issue) }
 
-    describe "for issues" do
+    describe "for :issue_added type" do
+      let!(:event) { Event.new(:issue_added, issue) }
+
       it "should include the author" do
         issue.stub(:author) { author }
         event.candidates.should include author
@@ -45,6 +46,20 @@ describe RedmineNotificationCenter::NotificationEvent do
         project.stub(:users => [blind])
         issue.stub(:visible?).with(blind).and_return(false)
         event.candidates.should_not include blind
+      end
+    end
+
+    describe "for :issue_edited type" do
+      let!(:event) { Event.new(:issue_edited, issue) }
+
+      it "should include the author" do
+        issue.stub(:author) { author }
+        event.candidates.should include author
+      end
+
+      it "should include the previous assignee" do
+        issue.stub(:assigned_to_was) { assignee }
+        event.candidates.should include assignee
       end
     end
   end
