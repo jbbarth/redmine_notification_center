@@ -35,6 +35,17 @@ module RedmineNotificationCenter
         #WAS: object.project.notified_users (through acts_as_event plugin)
         #but decision is moved down to NotificationPolicy#should_notify?
         recipients.reject! {|user| !object.visible?(user)}
+      when :attachments_added
+        container = object.first.container
+        class_name = container.class.name
+        recipients = container.project.users
+        #WAS: object.project.notified_users (through acts_as_event plugin)
+        #but decision is moved down to NotificationPolicy#should_notify?
+        if class_name == 'Document'
+          recipients.reject! {|user| !container.visible?(user)}
+        elsif class_name.in? %w(Project Version)
+          recipients.reject! {|user| !user.allowed_to?(:view_files, container.project)}
+        end
       end
       recipients
     end

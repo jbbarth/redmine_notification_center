@@ -165,5 +165,42 @@ describe RedmineNotificationCenter::NotificationEvent do
         event.candidates.should_not include blind
       end
     end
+
+    describe "for :attachments_added for Documents" do
+      let!(:document) { stub(:project => project, :visible? => true, :class => Document) }
+      let!(:file) { stub(:container => document) }
+      let!(:event) { Event.new(:attachments_added, [file]) }
+
+      it "delegates candidates to project.users" do
+        project.stub(:users) { [author, assignee] }
+        event.candidates.should == [author, assignee]
+      end
+
+      it "removes users who cannot view the issue" do
+        blind = stub
+        project.stub(:users => [blind])
+        document.stub(:visible?).with(blind).and_return(false)
+        event.candidates.should_not include blind
+      end
+    end
+
+    describe "for :attachments_added for Versions (or directly Projects)" do
+      let!(:version) { stub(:project => project, :class => Version) }
+      let!(:file) { stub(:container => version) }
+      let!(:event) { Event.new(:attachments_added, [file]) }
+
+      it "delegates candidates to project.users" do
+        project.stub(:users) { [author] }
+        author.stub(:allowed_to?).with(:view_files, project).and_return(true)
+        event.candidates.should == [author]
+      end
+
+      it "removes users who cannot view the issue" do
+        blind = stub
+        project.stub(:users => [blind])
+        blind.stub(:allowed_to?).with(:view_files, project).and_return(false)
+        event.candidates.should_not include blind
+      end
+    end
   end
 end
