@@ -18,6 +18,13 @@ describe RedmineNotificationCenter::NotificationEvent do
   end
 
   describe '#notified_users' do
-    #TODO
+    let!(:user_all) { FakeUser.new('all') }
+    let!(:user_none) { FakeUser.new('none') }
+
+    it 'includes candidate users who have notifications enabled for this event' do
+      event = Event.new(:issue_added, FakeIssue.new)
+      event.stub(:candidates).and_return([user_all, user_none])
+      event.notified_users.should == [user_all]
+    end
   end
 end
