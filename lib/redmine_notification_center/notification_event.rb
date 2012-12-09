@@ -29,7 +29,7 @@ module RedmineNotificationCenter
         #TODO: rewrite it, it's very slow
         recipients.reject! {|user| !issue.visible?(user)}
       when :document_added, :news_added, :news_comment_added, :message_posted,
-           :wiki_content_added
+           :wiki_content_added, :wiki_content_updated
         #for those items, "object.recipients" was implemented in the acts_as_event plugin
         recipients = object.project.users
         #WAS: object.project.notified_users (through acts_as_event plugin)
