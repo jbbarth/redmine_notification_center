@@ -27,6 +27,11 @@ module RedmineNotificationCenter
         #remove users that can not view the issue
         #TODO: rewrite it, it's very slow
         recipients.reject! {|user| !issue.visible?(user)}
+      when :document_added
+        recipients = object.project.users
+        #WAS: object.project.notified_users (through acts_as_event plugin)
+        #but decision is moved down to NotificationPolicy#should_notify?
+        recipients.reject! {|user| !object.visible?(user)}
       end
       recipients
     end
