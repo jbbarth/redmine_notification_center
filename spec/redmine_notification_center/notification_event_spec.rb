@@ -8,7 +8,8 @@ describe RedmineNotificationCenter::NotificationEvent do
     let!(:author) { stub(:active? => true) }
     let!(:assignee) { stub(:active? => true) }
     let!(:project) { stub(:users => []) }
-    let!(:issue) { stub(:project => project, :visible? => true).as_null_object }
+    let!(:issue) { stub(:author => nil, :assigned_to => nil, :assigned_to_was => nil,
+                        :project => project, :visible? => true) }
 
     describe "for :issue_added type" do
       let!(:event) { Event.new(:issue_added, issue) }
