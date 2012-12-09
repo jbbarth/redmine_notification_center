@@ -96,5 +96,22 @@ describe RedmineNotificationCenter::NotificationEvent do
         event.candidates.should_not include blind
       end
     end
+
+    describe "for :message_posted" do
+      let!(:message) { stub(:project => project, :visible? => true) }
+      let!(:event) { Event.new(:message_posted, message) }
+
+      it "delegates candidates to project.users" do
+        project.stub(:users) { [author, assignee] }
+        event.candidates.should == [author, assignee]
+      end
+
+      it "removes users who cannot view the issue" do
+        blind = stub
+        project.stub(:users => [blind])
+        message.stub(:visible?).with(blind).and_return(false)
+        event.candidates.should_not include blind
+      end
+    end
   end
 end

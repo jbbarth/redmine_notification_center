@@ -27,7 +27,7 @@ module RedmineNotificationCenter
         #remove users that can not view the issue
         #TODO: rewrite it, it's very slow
         recipients.reject! {|user| !issue.visible?(user)}
-      when :document_added, :news_added
+      when :document_added, :news_added, :message_posted
         #for those items, "object.recipients" was implemented in the acts_as_event plugin
         recipients = object.project.users
         #WAS: object.project.notified_users (through acts_as_event plugin)
