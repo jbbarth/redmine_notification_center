@@ -11,8 +11,9 @@ module RedmineNotificationCenter
     end
 
     def notified_users
+      policy = NotificationPolicy.new(self)
       candidates.select do |candidate|
-        NotificationPolicy.new(self).should_notify?(candidate)
+        policy.should_notify?(candidate)
       end
     end
   end
