@@ -15,6 +15,12 @@ describe RedmineNotificationCenter::NotificationEvent do
     it 'raises if event_type is unknown' do
       expect { Event.new(:nonexistent, Hash.new) }.to raise_error(ArgumentError)
     end
+
+    it 'raises if object respond to #commented' do
+      #we should use the commented model in those cases, not the comment itself
+      comment = stub(:commented => stub)
+      expect { Event.new(:news_comment_added, comment) }.to raise_error(ArgumentError)
+    end
   end
 
   describe '#notified_users' do
