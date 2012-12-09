@@ -7,7 +7,28 @@ module RedmineNotificationCenter
     end
 
     def candidates
-      raise "TODO"
+      recipients = []
+      case type
+      when :issue_added, :issue_edit
+        # adapted from app/models/issue.rb
+        issue = object
+        recipients << issue.author if issue.author
+        if issue.assigned_to
+          recipients += (issue.assigned_to.is_a?(Group) ? issue.assigned_to.users : [issue.assigned_to])
+        end
+        if issue.assigned_to_was
+          recipients += (issue.assigned_to_was.is_a?(Group) ? issue.assigned_to_was.users : [issue.assigned_to_was])
+        end
+        recipients.reject!{|u| !u.active? }
+        #WAS: !u.active? && u.notify_about?(self)} => removed, decision moved down to NotificationPolicy#should_notify?
+        recipients += issue.project.users
+        #WAS: issue.project.notified_users => same, decision moved to NotificationPolicy#should_notify?
+        recipients.uniq!
+        #remove users that can not view the issue
+        #TODO: rewrite it, it's very slow
+        recipients.reject! {|user| !issue.visible?(user)}
+      end
+      recipients
     end
 
     def notified_users
