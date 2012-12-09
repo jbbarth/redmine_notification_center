@@ -98,6 +98,23 @@ describe RedmineNotificationCenter::NotificationEvent do
       end
     end
 
+    describe "for :news_comment_added" do
+      let!(:news) { stub(:project => project, :visible? => true) }
+      let!(:event) { Event.new(:news_comment_added, news) }
+
+      it "delegates candidates to project.users" do
+        project.stub(:users) { [author, assignee] }
+        event.candidates.should == [author, assignee]
+      end
+
+      it "removes users who cannot view the issue" do
+        blind = stub
+        project.stub(:users => [blind])
+        news.stub(:visible?).with(blind).and_return(false)
+        event.candidates.should_not include blind
+      end
+    end
+
     describe "for :message_posted" do
       let!(:message) { stub(:project => project, :visible? => true) }
       let!(:event) { Event.new(:message_posted, message) }
