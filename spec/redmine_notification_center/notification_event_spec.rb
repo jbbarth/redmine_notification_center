@@ -131,5 +131,22 @@ describe RedmineNotificationCenter::NotificationEvent do
         event.candidates.should_not include blind
       end
     end
+
+    describe "for :wiki_content_added" do
+      let!(:wiki_content) { stub(:project => project, :visible? => true) }
+      let!(:event) { Event.new(:wiki_content_added, wiki_content) }
+
+      it "delegates candidates to project.users" do
+        project.stub(:users) { [author, assignee] }
+        event.candidates.should == [author, assignee]
+      end
+
+      it "removes users who cannot view the issue" do
+        blind = stub
+        project.stub(:users => [blind])
+        wiki_content.stub(:visible?).with(blind).and_return(false)
+        event.candidates.should_not include blind
+      end
+    end
   end
 end
