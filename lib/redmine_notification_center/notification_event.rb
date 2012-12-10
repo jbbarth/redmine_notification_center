@@ -1,6 +1,6 @@
 # Turns an A::R object into an event before notification
 module RedmineNotificationCenter
-  class NotificationEvent < Struct.new(:type, :object)
+  NotificationEvent = Struct.new(:type, :object) do
     def initialize(type, object)
       raise ArgumentError, "Unknown event type '#{type}'" unless Utils::known_event?(type)
       raise ArgumentError, "Bad object type 'Comment'" if object.respond_to?(:commented)
