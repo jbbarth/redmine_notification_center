@@ -1,6 +1,6 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-describe RedmineNotificationCenter::NotificationEvent do
+describe RedmineNotificationCenter::NotificationCasting do
   #ease of use
   Event = RedmineNotificationCenter::NotificationEvent
 
