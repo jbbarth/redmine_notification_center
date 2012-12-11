@@ -203,4 +203,24 @@ describe RedmineNotificationCenter::NotificationCasting do
       end
     end
   end
+
+  describe "#watcher_candidates" do
+    let!(:watcher) { stub(:active? => true) }
+    let!(:project) { stub(:users => []) }
+    let!(:issue) { stub(:author => nil, :assigned_to => nil, :assigned_to_was => nil,
+                        :project => project, :visible? => true,
+                        :watcher_users => stub(:active => [watcher])) }
+    let!(:event) { Event.new(:issue_added, issue) }
+
+    it "includes active watcher users" do
+      event.watcher_candidates.should == [watcher]
+    end
+
+    it "excludes users who don't have visibility" do
+      blind = stub
+      issue.stub(:watcher_users => stub(:active => [blind]))
+      issue.stub(:visible?).with(blind).and_return(false)
+      event.watcher_candidates.should_not include blind
+    end
+  end
 end

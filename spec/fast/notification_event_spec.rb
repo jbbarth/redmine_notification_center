@@ -32,6 +32,15 @@ describe RedmineNotificationCenter::NotificationEvent do
     end
   end
 
+  describe '#watcher_candidates' do
+    it 'delegates to a NotificationPolicy object' do
+      event = Event.new(:issue_added, stub)
+      RedmineNotificationCenter::NotificationCasting.any_instance.should_receive(:watcher_candidates)
+                                                                 .and_return(['bob'])
+      event.watcher_candidates.should == ['bob']
+    end
+  end
+
   describe '#notified_users' do
     let!(:user_all) { FakeUser.new('all') }
     let!(:user_none) { FakeUser.new('none') }
