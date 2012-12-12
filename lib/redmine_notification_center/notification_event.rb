@@ -8,18 +8,26 @@ module RedmineNotificationCenter
     end
 
     def candidates
-      NotificationCasting.new(self).candidates
+      casting.candidates
     end
 
     def watcher_candidates
-      NotificationCasting.new(self).watcher_candidates
+      casting.watcher_candidates
     end
 
     def notified_users
-      policy = NotificationPolicy.new(self)
       candidates.select do |candidate|
         policy.should_notify?(candidate)
       end
+    end
+
+    private
+    def policy
+      @policy ||= NotificationPolicy.new(self)
+    end
+
+    def casting
+      @casting ||= NotificationCasting.new(self)
     end
   end
 end
