@@ -17,7 +17,7 @@ module RedmineNotificationCenter
 
     def notified_users
       candidates.select do |candidate|
-        policy.should_notify?(candidate)
+        notified?(candidate)
       end
     end
 
@@ -28,6 +28,10 @@ module RedmineNotificationCenter
 
     def casting
       @casting ||= NotificationCasting.new(self)
+    end
+
+    def notified?(candidate)
+      policy.should_notify?(candidate)
     end
   end
 end
