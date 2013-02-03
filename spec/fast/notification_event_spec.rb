@@ -77,4 +77,13 @@ describe RedmineNotificationCenter::NotificationEvent do
       event.all_notified_users.should == [[user_all], [user_all2]]
     end
   end
+
+  describe '#all_recipients' do
+    it 'returns an array of :to and :cc mails' do
+      event = Event.new(:issue_added, FakeIssue.new)
+      event.stub(:to_notified_users) { [stub(:mail => 'mail_to@example.com')] }
+      event.stub(:cc_notified_users) { [stub(:mail => 'mail_cc@example.com')] }
+      event.all_recipients.should == [["mail_to@example.com"], ["mail_cc@example.com"]]
+    end
+  end
 end

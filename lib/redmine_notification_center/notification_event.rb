@@ -31,6 +31,10 @@ module RedmineNotificationCenter
       [to_notified_users, cc_notified_users]
     end
 
+    def all_recipients
+      [to_notified_users.map(&:mail), cc_notified_users.map(&:mail)]
+    end
+
     private
     def policy
       @policy ||= NotificationPolicy.new(self)
