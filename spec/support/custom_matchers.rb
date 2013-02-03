@@ -1,7 +1,7 @@
 # matches is a user receives notifications for a notification event
 RSpec::Matchers.define :receive_notifications_for do |*args|
   match do |user|
-    RedmineNotificationCenter::NotificationEvent.new(*args).notified_users.include?(user)
+    RedmineNotificationCenter::NotificationEvent.new(*args).to_notified_users.include?(user)
   end
 end
 

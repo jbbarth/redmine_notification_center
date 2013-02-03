@@ -15,7 +15,7 @@ module RedmineNotificationCenter
       casting.watcher_candidates
     end
 
-    def notified_users
+    def to_notified_users
       candidates.select do |candidate|
         notified?(candidate)
       end
@@ -28,7 +28,7 @@ module RedmineNotificationCenter
     end
 
     def all_notified_users
-      [notified_users, cc_notified_users]
+      [to_notified_users, cc_notified_users]
     end
 
     private
