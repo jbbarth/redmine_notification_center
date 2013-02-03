@@ -21,6 +21,16 @@ module RedmineNotificationCenter
       end
     end
 
+    def cc_notified_users
+      (watcher_candidates - candidates).select do |candidate|
+        notified?(candidate)
+      end
+    end
+
+    def all_notified_users
+      [notified_users, cc_notified_users]
+    end
+
     private
     def policy
       @policy ||= NotificationPolicy.new(self)

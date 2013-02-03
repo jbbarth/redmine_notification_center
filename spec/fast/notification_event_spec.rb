@@ -5,6 +5,10 @@ describe RedmineNotificationCenter::NotificationEvent do
   #ease of use
   Event = RedmineNotificationCenter::NotificationEvent
 
+  let(:user_all) { FakeUser.new('all') }
+  let(:user_all2) { FakeUser.new('all') }
+  let(:user_none) { FakeUser.new('none') }
+
   describe '#new' do
     it 'accepts some parameters' do
       expect { @evt = Event.new(:issue_added, Hash.new) }.to_not raise_error
@@ -42,13 +46,35 @@ describe RedmineNotificationCenter::NotificationEvent do
   end
 
   describe '#notified_users' do
-    let!(:user_all) { FakeUser.new('all') }
-    let!(:user_none) { FakeUser.new('none') }
-
     it 'includes candidate users who have notifications enabled for this event' do
       event = Event.new(:issue_added, FakeIssue.new)
       event.stub(:candidates).and_return([user_all, user_none])
       event.notified_users.should == [user_all]
+    end
+  end
+
+  describe '#cc_notified_users' do
+    it 'includes watcher_candidates who are not candidates and have notification enabled for this event' do
+      event = Event.new(:issue_added, FakeIssue.new)
+      event.stub(:candidates).and_return([user_all, user_none])
+      event.stub(:watcher_candidates).and_return([user_all2, user_all, user_none])
+      event.cc_notified_users.should == [user_all2]
+    end
+  end
+
+  describe '#all_notified_users' do
+    it 'returns an array structure to differentiate :cc and :to users' do
+      event = Event.new(:issue_added, FakeIssue.new)
+      event.stub(:candidates).and_return([user_all, user_none])
+      event.stub(:watcher_candidates).and_return([user_all2, user_none])
+      event.all_notified_users.should == [[user_all], [user_all2]]
+    end
+
+    it 'removes :to users from :cc' do
+      event = Event.new(:issue_added, FakeIssue.new)
+      event.stub(:candidates).and_return([user_all, user_none])
+      event.stub(:watcher_candidates).and_return([user_all, user_all2, user_none])
+      event.all_notified_users.should == [[user_all], [user_all2]]
     end
   end
 end
