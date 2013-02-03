@@ -222,5 +222,10 @@ describe RedmineNotificationCenter::NotificationCasting do
       issue.stub(:visible?).with(blind).and_return(false)
       event.watcher_candidates.should_not include blind
     end
+
+    it "is empty if object doesn't respond to #watcher_users" do
+      event = Event.new(:document_added, stub)
+      event.watcher_candidates.should == []
+    end
   end
 end

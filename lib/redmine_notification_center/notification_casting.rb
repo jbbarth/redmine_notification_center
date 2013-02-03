@@ -45,7 +45,7 @@ module RedmineNotificationCenter
 
     #adapted from lib/acts_as_watchable
     def watcher_candidates
-      watchers = object.watcher_users.active
+      watchers = object.respond_to?(:watcher_users) ? object.watcher_users.active : []
       #watchers.reject! {|user| user.mail_notification == 'none'}
       #=> NO: this decision is moved to NotificationPolicy
       watchers.reject! {|user| !object.visible?(user)} if object.respond_to?(:visible?)
