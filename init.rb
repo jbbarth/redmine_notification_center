@@ -12,7 +12,7 @@ Redmine::Plugin.register :redmine_notification_center do
   author_url 'mailto:jeanbaptiste.barth@gmail.com'
   version '0.1.0'
   url 'https://github.com/jbbarth/redmine_notification_center'
-  requires_redmine :version => %w(2.1.0)
+  requires_redmine :version => %w(2.1.6)
 end
 
 # Patches to existing classes/modules
