@@ -11,7 +11,7 @@ describe "Mailer and models checksums" do
     'app/models/mailer.rb'.should have_checksum 'be31d197e1388230ff52d8c9df1500ac'
     'app/models/board.rb'.should have_checksum '3384be003b7ed5a3ccfcd3342c7d3179'
     'app/models/document.rb'.should have_checksum 'fe6da8f542f9f18218d4a73e36747390'
-    'app/models/issue.rb'.should have_checksum '94b0114e530bee1cff656125c222ff4e'
+    'app/models/issue.rb'.should have_checksum '6dc0c9364beef459ffd52b7ec4e84264'
     'app/models/journal.rb'.should have_checksum 'f5badcc65d1ff0d547edd95cf24f9fdf'
     'app/models/message.rb'.should have_checksum '925f26e6f93e3d269acedfb107f3a2ba'
     'app/models/news.rb'.should have_checksum '1c4fc664e4d04ebeefa9fef5aa4abd5d'
