@@ -21,6 +21,6 @@ describe "Mailer and models checksums" do
     'app/models/watcher.rb'.should have_checksum '1089f1a7801364274a4e6a98ddcaef3c'
     'app/models/wiki.rb'.should have_checksum '8ed7bfd40c2fcbdb8b4435dfb0644f50'
     'app/models/wiki_content.rb'.should have_checksum 'e129ca603c33d920800aeeee82ed6ef3'
-    'app/models/wiki_page.rb'.should have_checksum '87f21707409dc68b1c169b6547f966d4'
+    'app/models/wiki_page.rb'.should have_checksum 'de93dbfc745ec60d63af85d892e56192'
   end
 end
