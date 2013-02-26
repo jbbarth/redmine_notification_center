@@ -15,8 +15,9 @@ class Mailer
     @author = issue.author
     @issue = issue
     @issue_url = url_for(:controller => 'issues', :action => 'show', :id => issue)
-    recipients = issue.recipients
-    cc = issue.watcher_recipients - recipients
+    #WAS: recipients = issue.recipients
+    #WAS: cc = issue.watcher_recipients - recipients
+    recipients, cc = RedmineNotificationCenter::NotificationEvent.new(:issue_added, @issue).all_recipients
     mail :to => recipients,
       :cc => cc,
       :subject => "[#{issue.project.name} - #{issue.tracker.name} ##{issue.id}] (#{issue.status.name}) #{issue.subject}"
@@ -36,9 +37,9 @@ class Mailer
     message_id journal
     references issue
     @author = journal.user
-    recipients = issue.recipients
-    # Watchers in cc
-    cc = issue.watcher_recipients - recipients
+    #WAS: recipients = issue.recipients
+    #WAS: cc = issue.watcher_recipients - recipients
+    recipients, cc = RedmineNotificationCenter::NotificationEvent.new(:issue_edited, issue).all_recipients
     s = "[#{issue.project.name} - #{issue.tracker.name} ##{issue.id}] "
     s << "(#{issue.status.name}) " if journal.new_value_for('status_id')
     s << issue.subject
@@ -60,7 +61,9 @@ class Mailer
     @author = User.current
     @document = document
     @document_url = url_for(:controller => 'documents', :action => 'show', :id => document)
-    mail :to => document.recipients,
+    #WAS: document.recipients
+    recipients, _ = RedmineNotificationCenter::NotificationEvent.new(:document_added, document).all_recipients
+    mail :to => recipients,
       :subject => "[#{document.project.name}] #{l(:label_document_new)}: #{document.title}"
   end
 
@@ -74,6 +77,7 @@ class Mailer
     added_to = ''
     added_to_url = ''
     @author = attachments.first.author
+    #TODO: convert recipients to plugin policy
     case container.class.name
     when 'Project'
       added_to_url = url_for(:controller => 'files', :action => 'index', :project_id => container)
@@ -107,6 +111,7 @@ class Mailer
     message_id news
     @news = news
     @news_url = url_for(:controller => 'news', :action => 'show', :id => news)
+    recipients, cc = RedmineNotificationCenter::NotificationEvent.new(:news_added, @news).all_recipients
     mail :to => news.recipients,
       :subject => "[#{news.project.name}] #{l(:label_news)}: #{news.title}"
   end
@@ -124,6 +129,7 @@ class Mailer
     @news = news
     @comment = comment
     @news_url = url_for(:controller => 'news', :action => 'show', :id => news)
+    recipients, cc = RedmineNotificationCenter::NotificationEvent.new(:news_comment_added, @news).all_recipients
     mail :to => news.recipients,
      :cc => news.watcher_recipients,
      :subject => "Re: [#{news.project.name}] #{l(:label_news)}: #{news.title}"
@@ -144,6 +150,7 @@ class Mailer
     cc = ((message.root.watcher_recipients + message.board.watcher_recipients).uniq - recipients)
     @message = message
     @message_url = url_for(message.event_url)
+    #TODO: convert recipients to plugin policy
     mail :to => recipients,
       :cc => cc,
       :subject => "[#{message.board.project.name} - #{message.board.name} - msg#{message.root.id}] #{message.subject}"
@@ -165,6 +172,7 @@ class Mailer
     @wiki_content_url = url_for(:controller => 'wiki', :action => 'show',
                                       :project_id => wiki_content.project,
                                       :id => wiki_content.page.title)
+    #TODO: convert recipients to plugin policy
     mail :to => recipients,
       :cc => cc,
       :subject => "[#{wiki_content.project.name}] #{l(:mail_subject_wiki_content_added, :id => wiki_content.page.pretty_title)}"
@@ -189,6 +197,7 @@ class Mailer
     @wiki_diff_url = url_for(:controller => 'wiki', :action => 'diff',
                                    :project_id => wiki_content.project, :id => wiki_content.page.title,
                                    :version => wiki_content.version)
+    #TODO: convert recipients to plugin policy
     mail :to => recipients,
       :cc => cc,
       :subject => "[#{wiki_content.project.name}] #{l(:mail_subject_wiki_content_updated, :id => wiki_content.page.pretty_title)}"
